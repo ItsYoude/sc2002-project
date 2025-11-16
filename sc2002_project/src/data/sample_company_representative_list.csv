@@ -1,0 +1,8 @@
+CompanyRepID,Name,CompanyName,Department,Position,Email,Status
+B123,John,John pte ltd,CS,manager,john@e.ntu.edu.sg,Pending
+C123,Cold,Cold pte ltd,Admin,Staff,cold@e.ntu.edu.sg,Pending
+Caven,Caven1,Caven2,Caven3,Caven4,Caven5,Approved
+Lucas,lucas1,lucas2,lucas3,lucas4,lucas5,Approved
+Po,Po1,Po2,Po3,Po4,Po5,Approved
+A123,Bobby,Construction pte ltd,HR,manager,bobby@e.ntu.edu.sg,Approved
+yes,bob,c1,accounting,manage,yes@email.com,Rejected

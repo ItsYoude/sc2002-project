@@ -38,11 +38,18 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         List<CompanyRepresentative> repsFromFile = FileService.loadCompanyReps();
         for (CompanyRepresentative rep : repsFromFile) {
             // System.out.println(rep.getStatus());
+            System.out.println(rep.getName()+rep.isApproved());
             String status = rep.getStatus() == null ? "" : rep.getStatus().trim(); //null-safe default
-            switch (status) {
-                case "Approved": approvedReps.add(rep);
-                case "Rejected": rejectedReps.add(rep);
-                default: pendingReps.add(rep);
+                switch (status) {
+                case "Approved":
+                    approvedReps.add(rep);
+                    break;
+                case "Rejected":
+                    rejectedReps.add(rep);
+                    break;
+                default:
+                    pendingReps.add(rep);
+                    break;
             }
 
         }

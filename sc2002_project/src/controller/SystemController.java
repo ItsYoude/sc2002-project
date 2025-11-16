@@ -19,7 +19,6 @@ public class SystemController {
 
     // Constructor
     public SystemController() {
-        System.out.println("Hello");
         users = new java.util.ArrayList<>();
         this.userController = new UserController();
         this.internshipController = new InternshipController();
@@ -45,7 +44,6 @@ public class SystemController {
      * Initialize system by loading data from CSV files
      */
     public void initializeSystem() {
-        //System.out.println("t1");
         List<Student> students = FileService.loadStudents();
         List<CareerCenterStaff> staff = FileService.loadCSStaff();
         List<CompanyRepresentative> reps = FileService.loadCompanyReps();
@@ -85,7 +83,6 @@ public class SystemController {
      * Start the system and display login screen
      */
     public void startSystem() {
-        //System.out.println("t2");
         LoginUI loginUI = new LoginUI(this, userController, internshipController, applicationController,careerController,repController, studentController);
         loginUI.displayLoginScreen();
     }
