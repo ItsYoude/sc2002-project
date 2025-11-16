@@ -1,0 +1,7 @@
+id,title,company,representativeId,major,yearType,description,openDate,closeDate,slots,visible,status
+I01,ananlyst,Construction pte ltd,A123,Computer Science,basic,know r,2025-10-11,2025-10-12,5,true,Pending
+I02,Software engineer,Construction pte ltd,A123,Computer Science,basic,degree,2025-10-11,2025-10-23,2,true,Pending
+I03,data scientist,Construction pte ltd,A123,Computer Science,advanced,DSAI,2025-10-23,2025-10-25,4,true,Pending
+I05,data scientist,Construction pte ltd,A123,Computer Science,basic,DSAI,2025-10-09,2025-10-10,6,true,Pending
+I06,junior analyst,Construction pte ltd,A123,Computer Science,basic,degree,2025-10-11,2025-10-20,1,true,Pending
+I07,Mechanics,Caven2,Caven,Mechatronics,Advanced,Looking for friendly students,2000-12-12,2001-12-12,3,true,Pending

@@ -1,0 +1,17 @@
+CompanyRepID,Name,CompanyName,Department,Position,Email,Status
+Caven,Caven1,Caven2,Caven3,Caven4,Caven5,Approved
+Lucas,lucas1,lucas2,lucas3,lucas4,lucas5,Approved
+yes,bob,c1,accounting,manage,yes@email.com,Rejected
+Po,Po1,Po2,Po3,Po4,Po5,Approved
+A123,Bobby,Construction pte ltd,HR,manager,bobby@e.ntu.edu.sg,Approved
+3,3,3,3,3,3,Pending
+Lee,Lee,Lee,Lee,lee,Lee@gmail.com,Pending
+Caven,Caven1,Caven2,Caven3,Caven4,Caven5,Approved
+Lucas,lucas1,lucas2,lucas3,lucas4,lucas5,Approved
+Po,Po1,Po2,Po3,Po4,Po5,Approved
+A123,Bobby,Construction pte ltd,HR,manager,bobby@e.ntu.edu.sg,Approved
+Caven,Caven1,Caven2,Caven3,Caven4,Caven5,Approved
+Lucas,lucas1,lucas2,lucas3,lucas4,lucas5,Approved
+yes,bob,c1,accounting,manage,yes@email.com,Rejected
+Po,Po1,Po2,Po3,Po4,Po5,Approved
+A123,Bobby,Construction pte ltd,HR,manager,bobby@e.ntu.edu.sg,Approved
