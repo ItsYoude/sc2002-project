@@ -148,7 +148,7 @@ public class ApplicationController {
             if (app.getInternship().getId().equalsIgnoreCase(internship.getId())
                 && app.getStudent().getName().equalsIgnoreCase(studentName)) {
                 app.setStatus(newStatus);
-                System.out.println("Application status updated for " + studentName + ": " + newStatus);
+                System.out.println("Application status updated for " + studentName + ": " + app.getStatus());
                 return;
             }
         }

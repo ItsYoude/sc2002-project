@@ -35,7 +35,7 @@ public class Application {
             return;
         }
 
-        app.setStatus("Approved");
+        app.setStatus("Successful");
         internship.setSlots(internship.getSlots() - 1);
 
         System.out.println("Application approved. Remaining slots: " + internship.getSlots());
@@ -43,6 +43,6 @@ public class Application {
 
     @Override
     public String toString() {
-        return "Student: " + student.getName() + ", Internship: " + internship.getTitle() + ", Status: " + status;
+        return "Student: " + student.getName() + ", Internship: " + internship.getTitle() + ", Status: " + this.getStatus();
     }
 }

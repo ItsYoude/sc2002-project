@@ -15,7 +15,7 @@ public class CompanyRepUI {
     private final CompanyRepresentative representative;
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
-     private final CompanyRepController companyRepController;
+    private final CompanyRepController companyRepController;
     private final Scanner sc;
 
     public CompanyRepUI(CompanyRepresentative representative, InternshipController internshipController, ApplicationController applicationController,CompanyRepController companyRepController) {
@@ -122,17 +122,18 @@ public class CompanyRepUI {
 
         while (true)
         {
-            System.out.print("Enter target year type (Basic/Advanced): ");
+            System.out.print("Enter target year type (Basic/Intermediate/Advanced): ");
             yearType = sc.nextLine().trim();
 
             if (yearType.equalsIgnoreCase("Basic") 
-            || yearType.equalsIgnoreCase("Advanced"))
+           || yearType.equalsIgnoreCase("Intermediate")
+            | yearType.equalsIgnoreCase("Advanced"))
             {
                 break;
             }
             else
             {
-                System.out.println("Invalid input. Enter either Basic for Y1/Y2 or Advanced for Y1-Y4.");
+                System.out.println("Invalid input. Enter either Basic for Y1/Y2 or Intermediate/Advanced for Y1-Y4.");
             }
         }
 
@@ -225,11 +226,29 @@ public class CompanyRepUI {
 
         System.out.print("Enter student name to approve/reject (or press Enter to cancel): ");
         String studentName = sc.nextLine().trim();
-        if (studentName.isEmpty()) return;
+        if (studentName.isEmpty())
+            return;
 
-        System.out.print("Enter 'A' to approve or 'R' to reject: ");
-        String decision = sc.nextLine().trim().toUpperCase();
-        applicationController.updateApplicationStatus(internship, studentName, decision.equals("A") ? "Approved" : "Rejected");
+
+
+        // VALIDATION LOOP: Keep asking until A or R is entered
+        String decision;
+         do {
+            System.out.print("Enter 'A' to approve or 'R' to reject: ");
+            decision = sc.nextLine().trim().toUpperCase();
+        } while (!decision.equals("A") && !decision.equals("R"));
+
+        // Convert to application status
+        if (decision.equals("A")) {
+            decision = "Successful";
+        } else {
+            decision = "Unsuccessful"; // also fixed spelling
+        }
+
+        System.out.println("Decision given is: " + decision);
+
+        //this part was changed to fufill the success/rejected to display to the student.
+        applicationController.updateApplicationStatus(internship, studentName, decision);
     }
 
     private void toggleVisibility() {
