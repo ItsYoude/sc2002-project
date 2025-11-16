@@ -2,6 +2,7 @@ package controller;
 
 import models.CompanyRepresentative;
 import utility.FileService;
+import models.Internship;
 
 import java.util.*;
 
@@ -141,4 +142,18 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         }
         return false;
     }
+
+    public boolean findAvaliableID(String id)
+    {
+        List<Internship> internships = FileService.loadInternships();
+        for (Internship i : internships) {
+            if (i.getId().equalsIgnoreCase(id)) {
+                System.out.println("ID is taken, choose another.");
+            }
+        }
+        return true;
+    }
+        
+
+
 }

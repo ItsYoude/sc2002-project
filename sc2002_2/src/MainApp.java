@@ -7,7 +7,7 @@ public class MainApp {
         SystemController systemController = new SystemController();
 
         System.out.println("============Staring Login UI==========");
-        systemController.initializeSystem();
+        //systemController.initializeSystem();
         systemController.startSystem();
 
     }

@@ -12,20 +12,20 @@ public class LoginUI {
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
     private final CSSController careerController;
-    private final CompanyRepController repController; 
+    private final CompanyRepController companyRepController; 
     private final StudentController studentController;
     private final Scanner sc;
 
     //contructor
     public LoginUI(SystemController systemController, UserController userController,
             InternshipController internshipController, ApplicationController applicationController,
-            CSSController careerController, CompanyRepController repController, StudentController studentController) {
+            CSSController careerController, CompanyRepController companyRepController, StudentController studentController) {
         this.systemController = systemController;
         this.userController = userController;
         this.internshipController = internshipController;
         this.applicationController = applicationController;
         this.careerController = careerController;
-        this.repController = repController;
+        this.companyRepController = companyRepController;
         this.studentController = studentController;
         this.sc = new Scanner(System.in);
     }
@@ -104,7 +104,7 @@ public class LoginUI {
 
 
 
-            boolean success = repController.registerRep(company_id, name, company, dept, position, email);
+            boolean success = companyRepController.registerRep(company_id, name, company, dept, position, email);
             if (success == true)
             {
                 System.out.println("Registration successful! Pending approval by Career Center Staff.");
@@ -134,7 +134,7 @@ public class LoginUI {
                 break; // <--- important
             }
             case "Company Representative": {
-                new CompanyRepUI((CompanyRepresentative) user, internshipController,applicationController).showMenu();
+                new CompanyRepUI((CompanyRepresentative) user, internshipController,applicationController,companyRepController).showMenu();
                 break; // <--- important
             }
             case "Career Center Staff": {
@@ -143,7 +143,7 @@ public class LoginUI {
                         internshipController,
                         applicationController,
                         careerController,
-                        repController)
+                        companyRepController)
                         .showMenu();
                 break; // <--- important
             }

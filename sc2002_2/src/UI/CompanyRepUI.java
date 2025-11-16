@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import controller.ApplicationController;
 import controller.InternshipController;
+import controller.CompanyRepController;
 import models.CompanyRepresentative;
 import models.Internship;
 
@@ -14,12 +15,14 @@ public class CompanyRepUI {
     private final CompanyRepresentative representative;
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
+     private final CompanyRepController companyRepController;
     private final Scanner sc;
 
-    public CompanyRepUI(CompanyRepresentative representative, InternshipController internshipController, ApplicationController applicationController) {
+    public CompanyRepUI(CompanyRepresentative representative, InternshipController internshipController, ApplicationController applicationController,CompanyRepController companyRepController) {
         this.representative = representative;
         this.internshipController = internshipController;
         this.applicationController = applicationController;
+        this.companyRepController = companyRepController;
         this.sc = new Scanner(System.in);
     }
 
@@ -101,7 +104,7 @@ public class CompanyRepUI {
         {
             System.out.print("Enter internship ID: ");
             id = sc.nextLine().trim();
-        } while (id.isEmpty()); //implement check the csv for exisitng ids. 
+        } while (id.isEmpty() || !companyRepController.findAvaliableID(id)); //implement check the csv for exisitng ids. 
         
 
         do
