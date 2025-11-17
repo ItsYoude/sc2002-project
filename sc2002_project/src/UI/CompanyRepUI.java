@@ -257,6 +257,7 @@ public class CompanyRepUI {
         Internship internship = internshipController.getInternshipById(id);
         if (internship != null && internship.getCompany().equalsIgnoreCase(representative.getCompanyName())) {
             internship.toggleVisibility();
+            internshipController.saveAllInternships();
             System.out.println("Internship visibility updated: " + internship.isVisible());
         } else {
             System.out.println("Invalid internship ID or not your internship.");
