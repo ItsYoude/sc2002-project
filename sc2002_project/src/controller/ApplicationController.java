@@ -29,7 +29,7 @@ public class ApplicationController {
 
     // Add new application
     public void apply(Student student, Internship internship) {
-                if (!canApply(student)) {
+        if (!canApply(student)) {
             System.out.println("You have reached the maximum of 3 active applications.");
             return;
         }

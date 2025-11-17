@@ -137,4 +137,20 @@ public class CSSController {
             System.out.println("Withdrawal request rejected.");
         }
     }
+
+    public void handleInternshipApproval(Internship internship, boolean approve, InternshipController internshipController) {
+        if (internship == null || !internship.getStatus().equalsIgnoreCase("Pending")) {
+            System.out.println("Error: Internship is not found or is not pending approval.");
+            return;
+        }
+        if (approve) {
+            internship.setStatus("Approved");
+            System.out.println("Internship '" + internship.getTitle() + "' approved. Students may now apply.");
+        } else {
+            internship.setStatus("Rejected");
+            System.out.println("Internship '" + internship.getTitle() + "' rejected.");
+        }
+        // Save the changes to the persistence layer
+        internshipController.saveAllInternships();
+    }
 }

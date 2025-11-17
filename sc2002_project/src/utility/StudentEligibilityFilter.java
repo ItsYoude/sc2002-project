@@ -2,6 +2,7 @@ package utility;
 
 import models.Internship;
 import models.Student;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,13 +14,22 @@ public class StudentEligibilityFilter implements IEligibilityFilter {
 
     @Override
     public List<Internship> filterEligible(List<Internship> opportunities, Student student) {
+        LocalDate today = LocalDate.now();
         return opportunities.stream()
-            // 1. Filter by Visibility (Requirement 4, 58)
+            // 1. MUST NOT be "Filled" (New Check based on rule)
+            .filter(i -> !i.getStatus().equalsIgnoreCase("Filled"))
+            // 2. MUST be "Approved" status (Hides Pending/Rejected)
+            .filter(i -> i.getStatus().equalsIgnoreCase("Approved"))
+            // 3. MUST NOT be past the closing date (New Check based on rule)
+            // Assuming Internship has getClosingDate() returning a LocalDate or similar object.
+            .filter(i -> i.getCloseDate().isAfter(today) || i.getCloseDate().isEqual(today))
+            // 4. MUST have Visibility toggled "on" [
             .filter(Internship::isVisible)
-            // 2. Filter by Major (Requirement 4, 57)
+            // 5. MUST match the student's Major
             .filter(i -> i.getMajor().equalsIgnoreCase(student.getMajor()))
-            // 3. Filter by Year/Level Eligibility (Requirement 4, 61)
+            // 6. MUST match the student's Year/Level Eligibility [cite: 61]
             .filter(i -> isLevelEligible(i, student))
+            
             .collect(Collectors.toList());
     }
     

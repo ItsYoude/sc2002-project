@@ -1,6 +1,8 @@
 package controller;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import models.*;
 import utility.FileService;
 import utility.IEligibilityFilter; // NEW: Abstraction for eligibility
@@ -109,6 +111,12 @@ public void viewAllInternships(String major, int yearOfStudy) {
     }
     public void setInternshipList(List<Internship> internships) {
         this.internships = internships;
+    }
+    public List<Internship> getPendingInternships() {
+        // Filter the main list where the status is "Pending"
+        return internships.stream()
+                .filter(i -> i.getStatus().equalsIgnoreCase("Pending"))
+                .collect(Collectors.toList());
     }
 
 }
