@@ -1,8 +1,12 @@
 package UI;
 
 import controller.*;
+
+import java.util.List;
 import java.util.Scanner;
 import models.*;
+import utility.IInternshipSorter;
+import utility.TitleSorter;
 
 public class StudentUI {
     private final Student student;
@@ -67,8 +71,27 @@ public class StudentUI {
     }
 
     private void viewInternships() {
-        System.out.println("Fetching internships for your profile...");
-        internshipController.viewAllInternships(student.getMajor(), student.getYearOfStudy());
+        System.out.println("Fetching and sorting internships for your profile...");
+        // --- DIP IN ACTION: UI chooses the concrete sorting implementation ---
+        // For the default view, we use the TitleSorter (alphabetical)
+        IInternshipSorter sorter = new TitleSorter(); 
+        // 1. Controller retrieves the filtered and sorted list
+        List<Internship> opportunities = internshipController.getEligibleInternships(
+            this.student, 
+            sorter // Passes the abstraction
+        );
+        // 2. UI handles presentation (Printing to console)
+        System.out.println("\n--- Internship Opportunities for " + student.getMajor() + " ---");
+        System.out.println("(Filtered by eligibility, visible status, and sorted by Title)");
+        
+        if (opportunities.isEmpty()) {
+            System.out.println("No internships are currently available based on your profile and visibility settings.");
+        } else {
+            // Print the clean, filtered, and sorted list retrieved from the controller
+            for (Internship opp : opportunities) {
+                System.out.println(opp);
+            }
+        }
     }
 
     private void viewMyApplications() {

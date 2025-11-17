@@ -90,4 +90,8 @@ public class Internship {
         return String.format("[%s] %s (%s) - %s | Level: %s | Major: %s | Slots: %d | Status: %s | Visible: %s",
                 id, title, company, description, yearType, major, slots, status, visible ? "Yes" : "No");
     }
+
+    public String getLevel() {
+        return yearType;
+    }
 }
