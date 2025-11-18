@@ -1,9 +1,7 @@
 package UI;
 import controller.*;
-import models.*;
-
-import java.util.List;
 import java.util.Scanner;
+import models.*;
 
 /*LoginUI ---- CLI for User Login + route them to respective dashboard upon successful login */
 public class LoginUI {
@@ -30,28 +28,41 @@ public class LoginUI {
         this.sc = new Scanner(System.in);
     }
 
-    public void handleLogin() {
-        System.out.println("t3");
-        while (true) {
-            systemController.initializeSystem();
-            System.out.println("Internship Placement Management System");
-            System.out.println("Enter User ID / Email (or type exit to quit): ");
-            String id = sc.nextLine().trim();
-            if (id.equalsIgnoreCase("exit")) {
-                System.out.println("See you again!");
-                break;
-            }
-            System.out.println("Enter Password: ");
-            String password = sc.nextLine().trim();
-            User loggedInUser = systemController.authenticateUser(id, password);
-            if (loggedInUser == null) {
-                System.out.println("Invalid ID or password! Pls Try Again!");
-            } else {
-                System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
-                redirectToDashboard(loggedInUser);
+public void handleLogin() {
+    systemController.initializeSystem();
+
+    while (true) {
+        System.out.println("\nInternship Placement Management System");
+        System.out.print("Enter User ID / Email (or type exit to quit): ");
+        String id = sc.nextLine().trim();
+
+        if (id.equalsIgnoreCase("exit")) {
+            System.out.println("See you again!");
+            break;
+        }
+
+        System.out.print("Enter Password: ");
+        String password = sc.nextLine().trim();
+
+        User loggedInUser = systemController.authenticateUser(id, password);
+
+        if (loggedInUser == null) {
+            System.out.println("Invalid ID or password! Please try again!");
+            continue;
+        }
+
+        if (loggedInUser instanceof CompanyRepresentative rep) {
+            if (!rep.isApproved()) {
+                System.out.println("Your account is pending approval by Career Center Staff.");
+                continue;
             }
         }
+
+        System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
+        redirectToDashboard(loggedInUser);
     }
+}
+
     
     
     public void displayLoginScreen() {

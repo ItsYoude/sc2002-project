@@ -1,13 +1,12 @@
 package UI;
 
+import controller.ApplicationController;
+import controller.CompanyRepController;
+import controller.InternshipController;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
-
-import controller.ApplicationController;
-import controller.InternshipController;
-import controller.CompanyRepController;
 import models.CompanyRepresentative;
 import models.Internship;
 
@@ -26,71 +25,47 @@ public class CompanyRepUI {
         this.sc = new Scanner(System.in);
     }
 
-    public void showMenu() {
-        boolean continueMenu = true;
+ public void showMenu() {
+    boolean continueMenu = true;
 
-        while (continueMenu) {
-            System.out.println("\n--- Company Representative Dashboard ---");
-            System.out.println("1. Create Internship Opportunity");
-            System.out.println("2. View My Internships");
-            System.out.println("3. Approve/Reject Applications");
-            System.out.println("4. Toggle Internship Visibility");
-            System.out.println("5. Change Password");
-            System.out.println("0. Logout");
-            System.out.print("Select option: ");
+    while (continueMenu) {
+        System.out.println("\n--- Company Representative Dashboard ---");
+        System.out.println("1. Create Internship Opportunity");
+        System.out.println("2. View My Internships");
+        System.out.println("3. Approve/Reject Applications");
+        System.out.println("4. Toggle Internship Visibility");
+        System.out.println("5. Change Password");
+        System.out.println("0. Logout");
+        System.out.print("Select option: ");
 
-            String choice = sc.nextLine().trim();
+        String choice = sc.nextLine().trim();
 
-            switch (choice) {
-                case "1":
-                    if(representative.isApproved() == false)
-                    {
-                        System.out.println(
-                                "Your account has yet to be approved, you are unable to gain access to this function.");
-                        break;
-                    }
-                    createInternship();
-                    break;
-                case "2":
-                    if(representative.isApproved() == false)
-                    {
-                        System.out.println(
-                                "Your account has yet to be approved, you are unable to gain access to this function.");
-                        break;
-                    }
-                    viewPostedInternships();
-                    break;
-                case "3":
-                    if(representative.isApproved() == false)
-                    {
-                        System.out.println(
-                                "Your account has yet to be approved, you are unable to gain access to this function.");
-                        break;
-                    }
-                    manageApplications();
-                    break;
-                case "4":
-                    if(representative.isApproved() == false)
-                    {
-                        System.out.println(
-                                "Your account has yet to be approved, you are unable to gain access to this function.");
-                        break;
-                    }
-                    toggleVisibility();
-                    break;
-                case "5":
-                    representative.changePassword();
-                    continueMenu = false;
-                    break;
-                case "0":
-                    System.out.println("Logging out...");
-                    continueMenu = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again!");
-            }
+        switch (choice) {
+            case "1":
+                createInternship();
+                break;
+            case "2":
+                viewPostedInternships();
+                break;
+            case "3":
+                manageApplications();
+                break;
+            case "4":
+                toggleVisibility();
+                break;
+            case "5":
+                representative.changePassword();
+                continueMenu = false;
+                break;
+            case "0":
+                System.out.println("Logging out...");
+                continueMenu = false;
+                break;
+            default:
+                System.out.println("Invalid option. Please try again!");
         }
     }
+}
 
     private void createInternship() {
 
