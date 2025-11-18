@@ -99,14 +99,21 @@ public class StudentUI {
     }
 
     private void applyInternship() {
+        System.out.println("Hello");
         System.out.print("Enter Internship ID to apply: ");
         String id = sc.nextLine().trim();
         Internship internship = internshipController.getInternshipById(id);
-        if (internship != null && internship.isVisible()) {
+        if (internship != null &&
+                internship.isVisible() &&
+                internship.getStatus().equalsIgnoreCase("Approved")) 
+        {
             applicationController.apply(student, internship);
-        } else {
+        } 
+        else 
+        {
             System.out.println("Invalid ID or internship not visible.");
         }
+        
     }
 
     private void withdrawApplication() {

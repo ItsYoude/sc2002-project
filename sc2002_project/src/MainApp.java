@@ -2,8 +2,10 @@ import java.util.List;
 
 import UI.LoginUI;
 import controller.*;
-
+import models.CompanyRepresentative;
 import models.User;
+
+
 
 public class MainApp {
     public static void main(String[] args) {

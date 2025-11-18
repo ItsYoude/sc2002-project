@@ -159,7 +159,7 @@ public class CSStaffUI {
                     System.out.println("Invalid status entered. Please enter Approved, Pending, Rejected, or Filled.");
                     return;
                 }
-                filtered = utility.InternshipFilter.filterByStatus(list, status);
+                //filtered = utility.InternshipFilter.filterByStatus(list, status);
                 break;
             case "2":
                 System.out.print("Enter major: ");
@@ -168,7 +168,7 @@ public class CSStaffUI {
                     System.out.println("Invalid major entered.");
                     return;
                 }
-                filtered = utility.InternshipFilter.filterByMajor(list, major);
+                //filtered = utility.InternshipFilter.filterByMajor(list, major);
                 break;
             case "3":
                 System.out.print("Enter level: ");
@@ -177,10 +177,10 @@ public class CSStaffUI {
                     System.out.println("Invalid level entered.");
                     return;
                 }
-                filtered = utility.InternshipFilter.filterByLevel(list, level);
+                //filtered = utility.InternshipFilter.filterByLevel(list, level);
                 break;
             case "4":
-                filtered = utility.InternshipFilter.filterVisible(list);
+                //filtered = utility.InternshipFilter.filterVisible(list);
                 break;
             default:
                 System.out.println("Invalid filter option.");
