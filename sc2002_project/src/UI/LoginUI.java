@@ -28,40 +28,40 @@ public class LoginUI {
         this.sc = new Scanner(System.in);
     }
 
-public void handleLogin() {
-    systemController.initializeSystem();
+    private void handleLogin() {
+        systemController.initializeSystem();
 
-    while (true) {
-        System.out.println("\nInternship Placement Management System");
-        System.out.print("Enter User ID / Email (or type exit to quit): ");
-        String id = sc.nextLine().trim();
+        while (true) {
+            System.out.println("\nInternship Placement Management System");
+            System.out.print("Enter User ID / Email (or type exit to quit): ");
+            String id = sc.nextLine().trim();
 
-        if (id.equalsIgnoreCase("exit")) {
-            System.out.println("See you again!");
-            break;
-        }
+            if (id.equalsIgnoreCase("exit")) {
+                System.out.println("See you again!");
+                break;
+            }
 
-        System.out.print("Enter Password: ");
-        String password = sc.nextLine().trim();
+            System.out.print("Enter Password: ");
+            String password = sc.nextLine().trim();
 
-        User loggedInUser = systemController.authenticateUser(id, password);
+            User loggedInUser = systemController.authenticateUser(id, password);
 
-        if (loggedInUser == null) {
-            System.out.println("Invalid ID or password! Please try again!");
-            continue;
-        }
-
-        if (loggedInUser instanceof CompanyRepresentative rep) {
-            if (!rep.isApproved()) {
-                System.out.println("Your account is pending approval by Career Center Staff.");
+            if (loggedInUser == null) {
+                System.out.println("Invalid ID or password! Please try again!");
                 continue;
             }
-        }
 
-        System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
-        redirectToDashboard(loggedInUser);
+            if (loggedInUser instanceof CompanyRepresentative rep) {
+                if (!rep.isApproved()) {
+                    System.out.println("Your account is pending approval by Career Center Staff.");
+                    continue;
+                }
+            }
+
+            System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
+            redirectToDashboard(loggedInUser);
+        }
     }
-}
 
     
     
@@ -91,7 +91,7 @@ public void handleLogin() {
     }
 
 
-    public void handleCompanyRepRegistration() {
+    private void handleCompanyRepRegistration() {
             System.out.println("Register as Company Representative");
             
             System.out.println("Enter Company ID: ");
