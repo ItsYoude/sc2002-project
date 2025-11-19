@@ -31,25 +31,26 @@ public class SystemController {
     /**
      * Authenticate user by ID and password
      */
-    public User authenticateUser(String id, String password) {
-    // reload company reps every time
-    List<CompanyRepresentative> reps = FileService.loadCompanyReps();
-    
-    for (User user : users) { 
-        if (user instanceof CompanyRepresentative) {
-            for (CompanyRepresentative rep : reps) {
-                if (rep.getUserId().equalsIgnoreCase(id) && rep.getPassword().equals(password)) {
-                    return rep;
-                }
-            }
-        } else {
-            if (user.getUserId().equalsIgnoreCase(id) && user.getPassword().equals(password)) {
+    public Object authenticateUser(String id, String password) {
+    for (User user : users) {
+
+        // ID matches
+        if (user.getUserId().equals(id)) {
+
+            // correct password
+            if (user.getPassword().equals(password)) {
                 return user;
             }
+
+            // ID found but password wrong
+            return Boolean.FALSE;
         }
     }
+
+    // ID not found at all
     return null;
 }
+
 
 
     public void updateUserPassword(String userId, String newPassword) {
@@ -124,4 +125,7 @@ public class SystemController {
     public ApplicationController getApplicationController() {
         return applicationController;
     }
+    public List<User> getAllUsers() {
+        return users;
+}
 }

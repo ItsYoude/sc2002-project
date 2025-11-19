@@ -142,7 +142,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return false;
     }
 
-    System.out.println("Registration successful! Pending approval by Career Center Staff.");
+    //System.out.println("Registration successful! Pending approval by Career Center Staff.");
     return true;
 }
 

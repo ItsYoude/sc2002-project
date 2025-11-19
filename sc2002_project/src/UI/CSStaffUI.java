@@ -11,14 +11,12 @@ import java.util.Scanner;
 import models.CareerCenterStaff;
 import models.Internship;
 import models.WithdrawRequest;
-
-
 import utility.FilterPipeline;
 import utility.LevelFilter;
+import utility.LevelType;
 import utility.MajorFilter;
 import utility.StatusFilter;
 import utility.VisibilityFilter;
-import utility.LevelType;
 
 
 public class CSStaffUI {
