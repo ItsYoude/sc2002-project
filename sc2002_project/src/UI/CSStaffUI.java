@@ -1,17 +1,25 @@
 package UI;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import controller.ApplicationController;
 import controller.CSSController;
 import controller.CompanyRepController;
 import controller.InternshipController;
 import controller.UserController;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import models.CareerCenterStaff;
 import models.Internship;
 import models.WithdrawRequest;
+
+
+import utility.FilterPipeline;
+import utility.LevelFilter;
+import utility.MajorFilter;
+import utility.StatusFilter;
+import utility.VisibilityFilter;
+import utility.LevelType;
+
 
 public class CSStaffUI {
     private final CareerCenterStaff staff;
@@ -69,8 +77,8 @@ public class CSStaffUI {
                     generateReports(); 
                     break;
                 case "6":
-                    staff.changePassword();
-                    continueMenu = false;
+                    boolean changedStaff = staff.changePassword();
+                    if (changedStaff) continueMenu = false;
                     break;
                 case "7":
                     List<WithdrawRequest> pendingRequests = careerController.getPendingWithdrawalRequests();
@@ -125,41 +133,40 @@ public class CSStaffUI {
         }
     }
 
-    // private void changePassword() {
-    //     System.out.print("Enter your current password: ");
-    //     String current = sc.nextLine().trim();
 
-    //     if (!staff.passwordValidator(current)) {
-    //         System.out.println("Incorrect password. Please try again.");
-    //         return;
-    //     }
 
-    //     System.out.print("Enter new password: ");
-    //     String newPassword = sc.nextLine().trim();
-    //     staff.changePassword(newPassword);
-
-    //     System.out.println("Password changed successfully. Please log in again.");
-    // }
     private void generateReports() {
         List<Internship> list = internshipController.getAllInternships();
 
         System.out.println("Filter by: 1) Status  2) Major  3) Level  4) Visible Only");
         String option = sc.nextLine().trim();
 
+
+        //Create pipeline and filtered list
         List<Internship> filtered = new ArrayList<>(list);
+        FilterPipeline pipeline = new FilterPipeline();
+
 
         switch (option) {
             case "1":
                 System.out.print("Enter status (Approved/Pending/Rejected/Filled): ");
                 String status = sc.nextLine().trim();
-                if (!status.equalsIgnoreCase("Approved") &&
-                    !status.equalsIgnoreCase("Pending") &&
-                    !status.equalsIgnoreCase("Rejected") &&
-                    !status.equalsIgnoreCase("Filled")) {
-                    System.out.println("Invalid status entered. Please enter Approved, Pending, Rejected, or Filled.");
+                if (status.isEmpty()) {
+                    System.out.println("Please do not enter an empty string.");
                     return;
                 }
+                if (!status.equalsIgnoreCase("Approved") &&
+                        !status.equalsIgnoreCase("Pending") &&
+                        !status.equalsIgnoreCase("Rejected") &&
+                        !status.equalsIgnoreCase("Filled")) {
+                    System.out.println(
+                            "Invalid status entered. Please enter Approved, Pending, Rejected, or Filled.");
+                    return;
+                }
+
                 //filtered = utility.InternshipFilter.filterByStatus(list, status);
+                //Pipeline filtering for this.
+                pipeline.add(new StatusFilter(status));
                 break;
             case "2":
                 System.out.print("Enter major: ");
@@ -169,25 +176,43 @@ public class CSStaffUI {
                     return;
                 }
                 //filtered = utility.InternshipFilter.filterByMajor(list, major);
+
+                pipeline.add(new MajorFilter(major));
                 break;
             case "3":
                 System.out.print("Enter level: ");
                 String level = sc.nextLine().trim();
-                if (level.isEmpty()) {
-                    System.out.println("Invalid level entered.");
+                if (level.isEmpty())
+                {
+                    System.out.println("Level cannot be empty.");
                     return;
                 }
+
+                //check if its inside the enum
+                LevelType levelEnum;
+                try
+                {
+                    levelEnum = LevelType.valueOf(level.toUpperCase());
+                }
+                catch (IllegalArgumentException e) {
+                    System.out.println("Invalid level. Please enter Basic, Intermediate, or Advanced.");
+                    return;
+                }
+
                 //filtered = utility.InternshipFilter.filterByLevel(list, level);
+                pipeline.add(new LevelFilter(level));
                 break;
             case "4":
                 //filtered = utility.InternshipFilter.filterVisible(list);
+                pipeline.add(new VisibilityFilter());
                 break;
             default:
                 System.out.println("Invalid filter option.");
                 return;
-        } 
-
+        }
+    
         System.out.println("\n--- Filtered Internships ---");
+        filtered = pipeline.filter(list);
         for (Internship i : filtered) System.out.println(i);
     }
 

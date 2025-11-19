@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
-import controller.*;
 import models.*;
 import utility.FileService;
 
 public class CSSController {
+    private static CSSController instance;
     private final CompanyRepController repController;
     private final ApplicationController applicationController;
     private final List<WithdrawRequest> withdrawRequests;
+    private final List<CareerCenterStaff> staffList = new ArrayList<>();
     private final Scanner sc;
 
 
@@ -21,8 +21,16 @@ public class CSSController {
         this.repController = repController;
         this.withdrawRequests = new ArrayList<>();
         this.sc = new Scanner(System.in);
+        this.staffList.addAll(FileService.loadCSStaff()); // <-- load from CSV
+        instance = this;
     }
     
+    public List<CareerCenterStaff> getAllStaff() {
+    return staffList;
+}
+    public static CSSController getInstance() {
+        return instance;
+    }
 
     public void manageCompanyRepresentatives() {
         System.out.println("Managing company representative accounts...");

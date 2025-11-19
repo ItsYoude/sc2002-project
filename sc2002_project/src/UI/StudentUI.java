@@ -1,7 +1,6 @@
 package UI;
 
 import controller.*;
-
 import java.util.List;
 import java.util.Scanner;
 import models.*;
@@ -53,12 +52,14 @@ public class StudentUI {
                 case "4":
                     withdrawApplication();
                     break;
+                case "5":
+                    boolean changed = student.changePassword();
+                    if (changed) {
+                        continueMenu = false; // log out only if password was changed
+                    }
+                    break;
                 case "6":
                     acceptInternship();
-                    break;
-                case "5":
-                    student.changePassword();
-                    continueMenu = false;
                     break;
                 case "0":
                     System.out.println("Logging out and returning to login screen...");
@@ -99,24 +100,56 @@ public class StudentUI {
     }
 
     private void applyInternship() {
-        System.out.println("Hello");
-        System.out.print("Enter Internship ID to apply: ");
-        String id = sc.nextLine().trim();
-        Internship internship = internshipController.getInternshipById(id);
-        if (internship != null &&
-                internship.isVisible() &&
-                internship.getStatus().equalsIgnoreCase("Approved")) 
+
+        //show the students what they can apply first
+        
+        
+        // 1. Controller retrieves the avalialbe internships for the student
+        List<Internship> opportunities = internshipController.getEligibleInternships(this.student);
+
+
+
+        if (!opportunities.isEmpty())
         {
+            //2. display to the user first
+            System.out.println("\n--- Internship Opportunities  " + student.getMajor() + " ---");
+            for (Internship opp : opportunities) {
+                System.out.println(opp);
+            }
+
+            System.out.print("Enter Internship ID to apply: ");
+            String id = sc.nextLine().trim();
+
+            boolean exists = opportunities.stream()
+                    .anyMatch(i -> i.getId().equalsIgnoreCase(id));
+
+            if (!exists) {
+                System.out.println("Internship ID entered not inside list of opportunities!");
+                return;
+            }
+
+            Internship internship = internshipController.getInternshipById(id);
+            // if (internship != null &&
+            //         internship.isVisible() &&
+            //         internship.getStatus().equalsIgnoreCase("Approved")) {
+            //     applicationController.apply(student, internship);
+            // } else {
+            //     System.out.println("Invalid ID or internship not visible.");
+            // }
             applicationController.apply(student, internship);
         } 
-        else 
+        else
         {
-            System.out.println("Invalid ID or internship not visible.");
+            System.out.println("No avaliable internships for you to apply for.");
         }
+       
         
     }
 
     private void withdrawApplication() {
+
+        //draw from applied/accepted
+
         System.out.print("Enter Internship ID to withdraw: ");
         String id = sc.nextLine().trim();
         Internship internship = internshipController.getInternshipById(id);
@@ -142,21 +175,4 @@ public class StudentUI {
         }
     }
 
-
-    // private void changePassword() {
-    //     System.out.print("Enter your current password: ");
-    //     String current = sc.nextLine().trim();
-
-    //     if (!student.passwordValidator(current)) {
-    //         System.out.println("Incorrect password. Please try again.");
-    //         return;
-    //     }
-
-    //     System.out.print("Enter your new password: ");
-    //     String newPassword = sc.nextLine().trim();
-    //     student.changePassword(newPassword);
-
-    //     System.out.println("Password successfully changed!");
-    //     System.out.println("You will now be logged out. Please login again with your new password.");
-    // }
 }

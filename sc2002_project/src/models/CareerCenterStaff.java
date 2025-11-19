@@ -1,10 +1,14 @@
 package models;
 
+import java.util.List;
+import java.util.Scanner;
+import utility.FileService;
+
 public class CareerCenterStaff extends User {
     private String department;
 
-    public CareerCenterStaff(String userId, String name, String department, String email) {
-        super(userId, name, email); // default password
+    public CareerCenterStaff(String userId, String name, String department, String email, String password) {
+        super(userId, name, email, password); 
         this.department = department;
     }
 
@@ -33,4 +37,40 @@ public class CareerCenterStaff extends User {
 
     @Override
     public String getUserType() { return "Career Center Staff"; }
+
+    public boolean changePassword() {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.print("Enter your current password: ");
+    String current = sc.nextLine().trim();
+
+    if (!getPassword().equals(current)) {
+        System.out.println("Incorrect password. Please try again.");
+        return false;
+    }
+
+    System.out.print("Enter your new password: ");
+    String newPassword = sc.nextLine().trim();
+
+    setPassword(newPassword);
+
+    // --- Fix: load all staff, update this staff, save ---
+    List<CareerCenterStaff> allStaff = FileService.loadCSStaff();
+    for (CareerCenterStaff staff : allStaff) {
+        if (staff.getUserId().equals(this.getUserId())) {
+            staff.setPassword(newPassword); // update password
+            break;
+        }
+    }
+
+    if (FileService.saveStaff(allStaff)) {
+        System.out.println("Password successfully changed!");
+        System.out.println("Please login again with your new password.");
+        return true;
+    } else {
+        System.out.println("Error saving password. Try again later.");
+        return false;
+    }
+}
+
 }

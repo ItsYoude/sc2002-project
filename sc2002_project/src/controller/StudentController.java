@@ -1,12 +1,9 @@
 package controller;
 
-import models.*;
-import utility.FileService;
-import utility.InternshipFilter;
-
 import java.util.*;
 import java.util.stream.Collectors;
-import java.time.LocalDate;
+import models.*;
+import utility.FileService;
 /*
 manage actions Student can perform
     - View available internships
@@ -22,6 +19,7 @@ Coordinate between:
     - FileService (for saving changes)
 */
 public class StudentController {
+    private static StudentController instance;
     private final CSSController cssController;
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
@@ -34,6 +32,7 @@ public class StudentController {
         this.internshipController = internshipController;
         this.applicationController = applicationController;
         this.students = students;
+        instance = this;
     }
 
     /**
@@ -48,7 +47,9 @@ public class StudentController {
                   .filter(i -> student.isLevelAllowed(i.getYearType()))
                   .collect(Collectors.toList());
     }
-
+    public static StudentController getInstance() {
+        return instance;
+    }
     /**
      * Apply for an internship
      */

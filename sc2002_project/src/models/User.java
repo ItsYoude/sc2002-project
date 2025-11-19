@@ -9,11 +9,11 @@ public abstract class User {
     private String password;
     private Scanner sc;
 
-    public User(String userId, String name, String email) {
+    public User(String userId, String name, String email, String password) {
         this.userId = userId;
         this.name = name;
         this.email = email;
-        this.password = "password".toLowerCase().trim();     //default password
+        this.password = password;     
         this.sc = new Scanner(System.in);
     }
 
@@ -26,23 +26,6 @@ public abstract class User {
 
     public boolean passwordValidator(String input) {
         return password.equals(input);
-    }
-
-    public void changePassword() {
-        //this.password = newPassword;
-        System.out.print("Enter your current password: ");
-        String current = sc.nextLine().trim();
-
-        if (!passwordValidator(current)) {
-            System.out.println("Incorrect password. Please try again.");
-            return;
-        }
-
-        System.out.print("Enter your new password: ");
-        String new_password = sc.nextLine().trim();
-        this.password = new_password;
-        System.out.println("Password successfully changed!"+ this.password);
-        System.out.println("You will now be logged out. Please login again with your new password.");
     }
 
     public abstract String getUserType();

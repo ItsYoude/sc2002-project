@@ -46,8 +46,40 @@ public class LoginUI {
 
             User loggedInUser = systemController.authenticateUser(id, password);
 
+<<<<<<< HEAD
             if (loggedInUser == null) {
                 System.out.println("Invalid ID or password! Please try again!");
+=======
+        if (loggedInUser == null) {
+            System.out.println("Invalid ID or password! Please try again!");
+            continue;
+        }
+
+        // Handle company rep approval/rejection
+        if (loggedInUser instanceof CompanyRepresentative) {
+            final String loginId = loggedInUser.getUserId();  // final copy for lambda
+            CompanyRepresentative repFromCSV = companyRepController.getAllCompanyReps().stream()
+                    .filter(r -> r.getUserId().equalsIgnoreCase(loginId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (repFromCSV != null) {
+                loggedInUser = repFromCSV; // assign the CSV version
+                String status = repFromCSV.getStatus();
+
+                if (status.equalsIgnoreCase("Pending")) {
+                    System.out.println("Your account is still pending approval by Career Center Staff.");
+                    continue;
+                }
+
+                if (status.equalsIgnoreCase("Rejected")) {
+                    System.out.println("Your account has been rejected.");
+                    continue;
+                }
+                // If status is Approved → continue to dashboard
+            } else {
+                System.out.println("Error: Company Representative not found in system.");
+>>>>>>> 291c9fc3d790ad675582d027f2feb5512d13be6a
                 continue;
             }
 
@@ -63,7 +95,6 @@ public class LoginUI {
         }
     }
 
-    
     
     public void displayLoginScreen() {
         while (true) {
@@ -112,9 +143,6 @@ public class LoginUI {
             System.out.print("Enter Email: ");
             String email = sc.nextLine().trim();
 
-
-
-
             boolean success = companyRepController.registerRep(company_id, name, company, dept, position, email);
             if (success == true)
             {
@@ -134,10 +162,6 @@ public class LoginUI {
     }
 
 
-    
-     
-    
-    
     private void redirectToDashboard(User user) {
         switch (user.getUserType()) {
             case "Student": {
