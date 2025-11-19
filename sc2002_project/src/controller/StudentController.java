@@ -23,7 +23,7 @@ public class StudentController {
     private final CSSController cssController;
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
-    private final List<Student> students; // all students loaded from CSV
+    private static List<Student> students; // all students loaded from CSV
 
     public StudentController(CSSController cssController, InternshipController internshipController,
                              ApplicationController applicationController,
@@ -163,7 +163,8 @@ public class StudentController {
     /**
      * Get all students (useful for saving or listing)
      */
-    public List<Student> getAllStudents() {
+    public static List<Student> getAllStudents() {
         return students;
     }
+
 }

@@ -35,6 +35,25 @@ public class Student extends User {
         return appliedInternshipId;
     }
 
+    public void updateStatusForRecord(String id,String status)
+    {
+        for (AppliedRecord record : appliedInternshipId) {
+            if (record.getInternshipId().equalsIgnoreCase(id)) {
+                record.setStatus(status);
+                System.out.println("Hi");
+                return; // done
+            }
+        }
+    }
+
+    public void readAppliedRecord()
+    {
+        for (AppliedRecord record : appliedInternshipId)
+        {
+            System.out.println(record.getInternshipId()+":"+record.getStatus());
+        }
+    }
+
     public String getAcceptedInternshipId() {
         return acceptedInternshipId;
     }

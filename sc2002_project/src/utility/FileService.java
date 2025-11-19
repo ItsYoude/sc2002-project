@@ -3,6 +3,8 @@ package utility;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
+
+import controller.InternshipController;
 import models.*;
 
 public class FileService {
@@ -52,7 +54,7 @@ public class FileService {
                     if (!applied.isEmpty()) {
                         String[] appliedRecords = applied.split(";");
                         for (String record : appliedRecords) {
-                            String[] recordParts = record.split(",", -1);
+                            String[] recordParts = record.split(":", -1);
                             if (recordParts.length == 2) {
                                 String internshipId = recordParts[0].trim();
                                 String status = recordParts[1].trim();
@@ -86,7 +88,7 @@ public class FileService {
                 
             List<String> appliedStrings = new ArrayList<>();
             for (AppliedRecord ar : s.getAppliedInternshipId()) {
-                appliedStrings.add(ar.getInternshipId() + "," + ar.getStatus());
+                appliedStrings.add(ar.getInternshipId() + ":" + ar.getStatus());
             }
 
             String applied = String.join(";", appliedStrings);
@@ -258,7 +260,8 @@ public class FileService {
     public static boolean saveInternships(List<Internship> internships) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(INTERNSHIP_DATA_FILE))) {
             // Write header
-            bw.write("id,title,company,representativeId,major,yearType,description,openDate,closeDate,slots,visible,status");
+            bw.write(
+                    "id,title,company,representativeId,major,yearType,description,openDate,closeDate,slots,visible,status");
             bw.newLine();
 
             for (Internship i : internships) {
@@ -274,8 +277,7 @@ public class FileService {
                         i.getCloseDate().toString(),
                         String.valueOf(i.getSlots()),
                         String.valueOf(i.isVisible()),
-                        i.getStatus()
-                ));
+                        i.getStatus()));
                 bw.newLine();
             }
             return true;
@@ -284,6 +286,27 @@ public class FileService {
             return false;
         }
     }
+
+    public static List<Application> loadApplications(List<Student> students,InternshipController internshipController) {
+    List<Application> applications = new ArrayList<>();
+    for (Student student : students) {
+        for (AppliedRecord record : student.getAppliedInternshipId()) {
+            Internship internship = internshipController.getInternshipById(record.getInternshipId());
+            if (internship != null) {
+                Application a = new Application(student, internship);
+                a.setStatus(record.getStatus());
+                applications.add(a);
+            }
+        }
+    }
+
+        return applications;
+    }
+
+    
+
+
+
 
 
 

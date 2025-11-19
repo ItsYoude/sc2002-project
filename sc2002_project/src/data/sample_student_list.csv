@@ -1,5 +1,5 @@
 StudentID,Name,Major,Year,Email,AppliedInternships,AcceptedInternship,Password
-test,Tan Wei Ling,Computer Science,2,tan001@e.ntu.edu.sg,,,password1
+test,Tan Wei Ling,Computer Science,2,tan001@e.ntu.edu.sg,I01:Pending;I08:Successful;I10:Pending,,password1
 U2310002B,Ng Jia Hao,Data Science & AI,3,ng002@e.ntu.edu.sg,,,password
 U2310003C,Lim Yi Xuan,Computer Engineering,4,lim003@e.ntu.edu.sg,,,password
 U2310004D,Chong Zhi Hao,Information Engineering & Media,1,chong004@e.ntu.edu.sg,,,password

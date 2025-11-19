@@ -16,4 +16,13 @@ public class AppliedRecord {
     public String getStatus() {
         return status;
     }
+
+    public void setInternshipId(String id) {
+        this.internshipId = id;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }
