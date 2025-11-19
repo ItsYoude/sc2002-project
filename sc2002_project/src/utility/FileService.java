@@ -42,13 +42,32 @@ public class FileService {
                 String major = parts[2].trim();
                 int year = Integer.parseInt(parts[3].trim());
                 String email = parts[4].trim();
-                String applied = parts.length > 5 ? parts[5].trim() : "";
-                String accepted = parts.length > 6 ? parts[6].trim() : "";
+                String applied  = parts[5].trim();   // semicolon separated
+                String accepted = parts[6].trim();
                 String password = parts[7].trim();
 
                 Student student = new Student(id, name, year, major, email, password);
-                students.add(student);
-            }
+                
+                    // restore applied internship IDs
+                    if (!applied.isEmpty()) {
+                        String[] appliedRecords = applied.split(";");
+                        for (String record : appliedRecords) {
+                            String[] recordParts = record.split(",", -1);
+                            if (recordParts.length == 2) {
+                                String internshipId = recordParts[0].trim();
+                                String status = recordParts[1].trim();
+                                student.getAppliedInternshipId().add(new AppliedRecord(internshipId, status));
+                            }
+                        }
+                    }
+
+                    // restore accepted internship
+                    if (!accepted.isEmpty()) {
+                        student.setAcceptedInternshipId(accepted.trim());
+                    }
+
+                    students.add(student);
+                }                
         } catch (IOException e) {
             System.out.println("Error loading students: " + e.getMessage());
         }
@@ -62,9 +81,19 @@ public class FileService {
             bw.newLine();
 
             for (Student s : students) {
-                String applied = String.join(";", s.getAppliedInternshipId()); // separate multiple IDs by ;
-                String accepted = s.getAcceptedInternshipId() != null ? s.getAcceptedInternshipId() : "";
+                // String applied = String.join(";", s.getAppliedInternshipId()); // separate multiple IDs by ;
+                // String accepted = s.getAcceptedInternshipId() != null ? s.getAcceptedInternshipId() : "";
                 
+            List<String> appliedStrings = new ArrayList<>();
+            for (AppliedRecord ar : s.getAppliedInternshipId()) {
+                appliedStrings.add(ar.getInternshipId() + "," + ar.getStatus());
+            }
+
+            String applied = String.join(";", appliedStrings);
+
+            String accepted = s.getAcceptedInternshipId() != null ? s.getAcceptedInternshipId() : "";
+
+
                 bw.write(String.join(",",
                         s.getUserId(),
                         s.getName(),

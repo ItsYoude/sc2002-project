@@ -11,26 +11,24 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     private List<CompanyRepresentative> rejectedReps = new ArrayList<>();
     private static CompanyRepController instance;
 
-
     private List<CompanyRepresentative> companyReps = new ArrayList<>();
 
     public CompanyRepController() {// Constructor
         loadReps();
         instance = this;
     }
-    
+
     public static CompanyRepController getInstance() {
         return instance;
     }
-    
+
     public List<CompanyRepresentative> getAllCompanyReps() {
         return companyReps;
     }
 
-
     // Getters for UI/CSS/RepController
     public List<CompanyRepresentative> getPendingReps() {
-        return pendingReps; 
+        return pendingReps;
     }
 
     public List<CompanyRepresentative> getApprovedReps() {
@@ -40,7 +38,6 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     public List<CompanyRepresentative> getRejectedReps() {
         return rejectedReps;
     }
-
 
     public final void loadReps() { //load all company rep entries into the two list 
         //clear both list first, then append the latest records into the two list
@@ -53,9 +50,9 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         for (CompanyRepresentative rep : repsFromFile) {
             // System.out.println(rep.getStatus());
             System.out.println(rep.getName() + rep.isApproved());
-            companyReps.add(rep);   // <--- track all reps
+            companyReps.add(rep); // <--- track all reps
             String status = rep.getStatus() == null ? "" : rep.getStatus().trim(); //null-safe default
-                switch (status) {
+            switch (status) {
                 case "Approved":
                     approvedReps.add(rep);
                     break;
@@ -70,22 +67,18 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         }
 
     }
-    
 
     public boolean saveAllReps() {
-    // Save the master list that contains all reps
-    if (!FileService.saveCompanyReps(companyReps)) {
-        System.out.println("Error while saving.");
-        return false;
+        // Save the master list that contains all reps
+        if (!FileService.saveCompanyReps(companyReps)) {
+            System.out.println("Error while saving.");
+            return false;
+        }
+        return true;
     }
-    return true;
-}
-
-
-
 
     //Caven5@gmail.com version
-    
+
     // public boolean saveAllReps() {
 
     // // Save the master list that contains all reps
@@ -96,9 +89,6 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     // }
     // return true;
     // }
-
-
-
 
     //serach by user id in selected list, (pending or approved)
     private CompanyRepresentative findRepInList(String userId, List<CompanyRepresentative> list) {
@@ -111,40 +101,39 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     }
 
     // Register a new rep (adds to pending list)
-    public boolean registerRep(String company_id, String name, String companyName, String department, String position,String email) 
-    {
+    public boolean registerRep(String company_id, String name, String companyName, String department, String position,
+            String email) {
 
-    // Check if userID exists in the system before registering
-    if (findRepInList(company_id, pendingReps) != null ||
-        findRepInList(company_id, approvedReps) != null ||
-        findRepInList(company_id, rejectedReps) != null) {
-        System.out.println("Registration failed: CompanyRepID already exists.");
-        return false;
+        // Check if userID exists in the system before registering
+        if (findRepInList(company_id, pendingReps) != null ||
+                findRepInList(company_id, approvedReps) != null ||
+                findRepInList(company_id, rejectedReps) != null) {
+            System.out.println("Registration failed: CompanyRepID already exists.");
+            return false;
+        }
+
+        // Create new CompanyRepresentative with default password "password" and status "Pending"
+        CompanyRepresentative rep = new CompanyRepresentative(
+                company_id, name, companyName, department, position, email, "Pending", "password");
+
+        // Add to master list for CSV saving
+        companyReps.add(rep);
+
+        // Add to pending list for UI/logic
+        pendingReps.add(rep);
+
+        // Save all reps to CSV
+        if (!saveAllReps()) {
+            // If saving fails, rollback both lists
+            pendingReps.remove(rep);
+            companyReps.remove(rep);
+            System.out.println("Error saving new representative. Please try again.");
+            return false;
+        }
+
+        //System.out.println("Registration successful! Pending approval by Career Center Staff.");
+        return true;
     }
-
-    // Create new CompanyRepresentative with default password "password" and status "Pending"
-    CompanyRepresentative rep = new CompanyRepresentative(
-            company_id, name, companyName, department, position,email, "Pending", "password"
-    );
-
-    // Add to master list for CSV saving
-    companyReps.add(rep);
-
-    // Add to pending list for UI/logic
-    pendingReps.add(rep);
-
-    // Save all reps to CSV
-    if (!saveAllReps()) {
-        // If saving fails, rollback both lists
-        pendingReps.remove(rep);
-        companyReps.remove(rep);
-        System.out.println("Error saving new representative. Please try again.");
-        return false;
-    }
-
-    //System.out.println("Registration successful! Pending approval by Career Center Staff.");
-    return true;
-}
 
     //Approve a rep
     //each rep account is tied to unique company ID
@@ -192,36 +181,40 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return false;
     }
 
-    public boolean findAvaliableID(String id)
+    // public boolean findAvaliableID(String id)
+    // {
+    //     List<Internship> internships = FileService.loadInternships();
+    //     for (Internship i : internships) {
+    //         if (i.getId().equalsIgnoreCase(id)) {
+    //             System.out.println("ID is taken, choose another.");
+    //         }
+    //     }
+    //     return true;
+    // }
+
+    public String getLatestId()
     {
         List<Internship> internships = FileService.loadInternships();
-        for (Internship i : internships) {
-            if (i.getId().equalsIgnoreCase(id)) {
-                System.out.println("ID is taken, choose another.");
-            }
-        }
-        return true;
+        int count = internships.size();
+        System.out.println();
+        return ("I" + String.valueOf(count + 1));
     }
-
-
-    public void findIfMaxInternshipCreated(CompanyRepresentative rep,InternshipController internshipController)
-    {
+    
+    
+    
+    
+    public void findIfMaxInternshipCreated(CompanyRepresentative rep, InternshipController internshipController) {
         List<Internship> allInternships = internshipController.getAllInternships();
         long count = allInternships.stream()
-            .filter(i -> i.getRepresentativeId().equals(rep.getUserId())) 
+                .filter(i -> i.getRepresentativeId().equals(rep.getUserId()))
                 .count();
-            
-        if (count >= 5)
-        {
+
+        if (count >= 5) {
             rep.setMaxCreated(true);
-        }
-        else
-        {
+        } else {
             rep.setMaxCreated(false);
         }
-        System.out.println((count));
+        //System.out.println((count));
     }
-        
-
 
 }

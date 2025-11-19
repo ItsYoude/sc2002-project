@@ -1,6 +1,7 @@
 package models;
 
 public class Application {
+
     private final Student student;
     private final Internship internship;
     private String status;
@@ -43,6 +44,6 @@ public class Application {
 
     @Override
     public String toString() {
-        return "Student: " + student.getName() + ", Internship: " + internship.getTitle() + ", Status: " + this.getStatus();
+        return "Internship ID: " + internship.getId() + " Student: " + student.getName() + ", Internship: " + internship.getTitle() + ", Status: " + this.getStatus();
     }
 }

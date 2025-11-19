@@ -79,10 +79,12 @@ public class CompanyRepUI {
 
             System.out.println("\n--- Create Internship Posting ---");
 
-            do {
-                System.out.print("Enter internship ID: ");
-                id = sc.nextLine().trim();
-            } while (id.isEmpty() || !companyRepController.findAvaliableID(id)); //implement check the csv for exisitng ids. 
+            // do {
+            //     System.out.print("Enter internship ID: ");
+            //     id = sc.nextLine().trim();
+            // } while (id.isEmpty() || !companyRepController.findAvaliableID(id)); //implement check the csv for exisitng ids. 
+            String listing_id = companyRepController.getLatestId();
+            System.out.println("Creating Internsip Posting for "+representative.getCompanyName()+" Listing ID = "+listing_id);
 
             do {
                 System.out.print("Enter internship title: ");
@@ -162,7 +164,7 @@ public class CompanyRepUI {
                 }
             }
 
-            Internship newInternship = new Internship(id, title, representative.getCompanyName(),
+            Internship newInternship = new Internship(listing_id, title, representative.getCompanyName(),
                     representative.getUserId(), major, yearType, description, openDate, closeDate, slots, true,
                     "Pending");
             internshipController.addInternship(newInternship);

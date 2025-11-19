@@ -2,9 +2,10 @@ id,title,company,representativeId,major,yearType,description,openDate,closeDate,
 I01,ananlyst,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,basic,know r,2025-10-11,2026-10-12,5,true,Approved
 I02,Software engineer,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,basic,degree,2025-10-11,2026-10-23,2,false,Approved
 I03,data scientist,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,advanced,DSAI,2025-10-23,2026-10-25,4,true,Pending
-I05,data scientist,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,basic,DSAI,2025-10-09,2026-10-10,6,true,Pending
 I04,IR engineer,Caven2,Caven5@gmail.com,Computer Engineering,Basic,We have fun,2025-12-12,2026-12-12,5,true,Pending
-I08,IRR Engineer,Caven2,Caven5@gmail.com,Computer Science,Basic,Amazing people,2025-12-12,2026-12-12,4,true,Pending
-I09,IRR Engineer,Caven2,Caven5@gmail.com,Computer Science,Basic,Amazing people,2025-12-12,2026-12-12,4,true,Pending
-I12,AR Vision,Caven2,Caven5@gmail.com,Computer Science,Basic,Wow amazing,2025-11-17,2026-11-18,3,true,Approved
-I06,International Superstar,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,Advanced,Super Idol de xiao rong,2025-11-19,2026-11-19,3,true,Pending
+I05,data scientist,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,basic,DSAI,2025-10-09,2026-10-10,6,true,Pending
+I06,IRR Engineer,Caven2,Caven5@gmail.com,Computer Science,Basic,Amazing people,2025-12-12,2026-12-12,4,true,Pending
+I07,IRR Engineer,Caven2,Caven5@gmail.com,Computer Science,Basic,Amazing people,2025-12-12,2026-12-12,4,true,Pending
+I08,AR Vision,Caven2,Caven5@gmail.com,Computer Science,Basic,Wow amazing,2025-11-17,2026-11-18,3,true,Approved
+I09,International Superstar,Construction pte ltd,bobby@e.ntu.edu.sg,Computer Science,Advanced,Super Idol de xiao rong,2025-11-19,2026-11-19,3,true,Pending
+I10,BTS Dancer,Caven2,Caven5@gmail.com,Computer Science,Intermediate,Dance lor,2025-11-19,2026-12-12,1,true,Pending

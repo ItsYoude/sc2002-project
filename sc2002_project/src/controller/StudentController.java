@@ -133,10 +133,13 @@ public class StudentController {
             }
         }
 
-        // Persist changes
-        FileService.saveStudents(students);
 
-        System.out.println("Offer accepted for " + internship.getTitle() + ". All other applications have been withdrawn.");
+        System.out.println(
+                "Offer accepted for " + internship.getTitle() + ". All other applications have been withdrawn.");
+        
+
+        //save to csv
+        FileService.saveStudents(students);
         return true;
     }
 

@@ -50,6 +50,11 @@ public class ApplicationController {
         Application app = new Application(student, internship);
         applications.add(app);
         System.out.println("Application submitted successfully!");
+
+
+        //save to csv. 
+        
+
     }
     /*
     // Accept a successful internship placement
