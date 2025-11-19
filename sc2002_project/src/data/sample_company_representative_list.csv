@@ -1,10 +1,9 @@
 CompanyRepID,Name,CompanyName,Department,Position,Email,Status,Password
-B123,John,John pte ltd,CS,manager,john@e.ntu.edu.sg,Pending,password
-C123,Cold,Cold pte ltd,Admin,Staff,cold@e.ntu.edu.sg,Pending,password
-1,1,1,1,1,1,Approved,test
-Caven,Caven1,Caven2,Caven3,Caven4,Caven5,Approved,password
-Lucas,lucas1,lucas2,lucas3,lucas4,lucas5,Approved,password
-Po,Po1,Po2,Po3,Po4,Po5,Approved,password
-A123,Bobby,Construction pte ltd,HR,manager,bobby@e.ntu.edu.sg,Approved,password
-yes,bob,c1,accounting,manage,yes@email.com,Rejected,password
-Lee,Lee,Lee,Lee,Lee,Lee,Rejected,password
+john@e.ntu.edu.sg,John,John pte ltd,CS,manager,john@e.ntu.edu.sg,Pending,password
+cold@e.ntu.edu.sg,Cold,Cold pte ltd,Admin,Staff,cold@e.ntu.edu.sg,Pending,password
+Caven5@gmail.com,Caven1,Caven2,Caven3,Caven4,Caven5,Approved,password
+lucas5@gmail.com,lucas1,lucas2,lucas3,lucas4,lucas5@gmail.com,Approved,password
+Po,Po1,Po2,Po3,Po4,Po5@gmail.com@gmail.com,Approved,password
+bobby@e.ntu.edu.sg,Bobby,Construction pte ltd,HR,manager,bobby@e.ntu.edu.sg,Approved,password
+yes@email.com,bob,c1,accounting,manage,yes@email.com,Rejected,password
+Jackson12,Jackson Wang,Wang Tech,Development,Engineer,jw12@gmail.com,Pending,password

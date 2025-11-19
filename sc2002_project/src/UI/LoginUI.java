@@ -114,7 +114,7 @@ public void handleLogin() {
     public void handleCompanyRepRegistration() {
             System.out.println("Register as Company Representative");
             
-            System.out.println("Enter Company ID: ");
+            System.out.println("Enter Company ID which is your email: ");
             String company_id = sc.nextLine().trim();
 
             System.out.print("Enter Name: ");
@@ -129,10 +129,11 @@ public void handleLogin() {
             System.out.print("Enter Position: ");
             String position = sc.nextLine().trim();
 
-            System.out.print("Enter Email: ");
-            String email = sc.nextLine().trim();
+            // System.out.print("Enter Email: ");
+            // String email = sc.nextLine().trim();
 
-            boolean success = companyRepController.registerRep(company_id, name, company, dept, position, email);
+
+            boolean success = companyRepController.registerRep(company_id, name, company, dept, position, company_id);
             if (success == true)
             {
                 System.out.println("Registration successful! Pending approval by Career Center Staff.");

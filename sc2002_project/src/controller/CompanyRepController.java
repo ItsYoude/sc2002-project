@@ -84,7 +84,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
 
 
 
-    //caven version
+    //Caven5@gmail.com version
     
     // public boolean saveAllReps() {
 
@@ -111,8 +111,8 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     }
 
     // Register a new rep (adds to pending list)
-    public boolean registerRep(String company_id, String name, String companyName, String department, String position,
-        String email) {
+    public boolean registerRep(String company_id, String name, String companyName, String department, String position,String email) 
+    {
 
     // Check if userID exists in the system before registering
     if (findRepInList(company_id, pendingReps) != null ||
@@ -124,7 +124,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
 
     // Create new CompanyRepresentative with default password "password" and status "Pending"
     CompanyRepresentative rep = new CompanyRepresentative(
-            company_id, name, companyName, department, position, email, "Pending", "password"
+            company_id, name, companyName, department, position,email, "Pending", "password"
     );
 
     // Add to master list for CSV saving
@@ -142,7 +142,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return false;
     }
 
-    System.out.println("Registration successful! Pending approval by Career Center Staff.");
+    //System.out.println("Registration successful! Pending approval by Career Center Staff.");
     return true;
 }
 
