@@ -6,7 +6,6 @@ import models.Internship;
 import utility.FileService;
 
 public class CompanyRepController { //interaction between UI and CompanyRepresentative 
-    private static CompanyRepController instance;
     private List<CompanyRepresentative> pendingReps = new ArrayList<>();
     private List<CompanyRepresentative> approvedReps = new ArrayList<>();
     private List<CompanyRepresentative> rejectedReps = new ArrayList<>();
@@ -29,9 +28,6 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     }
 
 
-
-
-
     // Getters for UI/CSS/RepController
     public List<CompanyRepresentative> getPendingReps() {
         return pendingReps; 
@@ -45,9 +41,6 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return rejectedReps;
     }
 
-    public List<CompanyRepresentative> getAllCompanyReps() {
-    return companyReps; 
-}
 
     public final void loadReps() { //load all company rep entries into the two list 
         //clear both list first, then append the latest records into the two list
