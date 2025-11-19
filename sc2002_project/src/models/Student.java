@@ -1,9 +1,11 @@
 package models;
 
+import controller.InternshipController;
+import controller.StudentController;
 import java.util.ArrayList;
 import java.util.List;
-
-import controller.InternshipController;
+import java.util.Scanner;
+import utility.FileService;
 
 public class Student extends User {
     private String major;
@@ -12,8 +14,8 @@ public class Student extends User {
     private List<String> appliedInternshipId;   //list of internship ID
     private String acceptedInternshipId;
 
-    public Student(String userId, String name, int yearOfStudy, String major, String email) {
-        super(userId, name, email);
+    public Student(String userId, String name, int yearOfStudy, String major, String email, String password) {
+        super(userId, name, email, password);
         this.yearOfStudy = yearOfStudy;
         this.major = major;
         this.appliedInternshipId = new ArrayList<>();
@@ -107,4 +109,35 @@ public class Student extends User {
     public String getUserType() {
         return "Student";
     }
+
+
+public boolean changePassword() {
+    Scanner sc = new Scanner(System.in);
+
+    System.out.print("Enter your current password: ");
+    String current = sc.nextLine().trim();
+
+    if (!passwordValidator(current)) {
+        System.out.println("Incorrect password. Please try again.");
+        return false;  // indicate failure
+    }
+
+    System.out.print("Enter your new password: ");
+    String newPassword = sc.nextLine().trim();
+
+    setPassword(newPassword); // update in memory
+
+    boolean success = FileService.saveStudents(StudentController.getInstance().getAllStudents());
+    if (success) {
+        System.out.println("Password successfully changed!");
+        System.out.println("You will now be logged out. Please login again with your new password.");
+        return true; // indicate success
+    } else {
+        System.out.println("Error saving password. Try again later.");
+        return false;
+    }
+}
+
+
+
 }

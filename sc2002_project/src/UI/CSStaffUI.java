@@ -1,14 +1,13 @@
 package UI;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import controller.ApplicationController;
 import controller.CSSController;
 import controller.CompanyRepController;
 import controller.InternshipController;
 import controller.UserController;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import models.CareerCenterStaff;
 import models.Internship;
 import models.WithdrawRequest;
@@ -69,8 +68,8 @@ public class CSStaffUI {
                     generateReports(); 
                     break;
                 case "6":
-                    staff.changePassword();
-                    continueMenu = false;
+                    boolean changedStaff = staff.changePassword();
+                    if (changedStaff) continueMenu = false;
                     break;
                 case "7":
                     List<WithdrawRequest> pendingRequests = careerController.getPendingWithdrawalRequests();
@@ -125,21 +124,8 @@ public class CSStaffUI {
         }
     }
 
-    // private void changePassword() {
-    //     System.out.print("Enter your current password: ");
-    //     String current = sc.nextLine().trim();
 
-    //     if (!staff.passwordValidator(current)) {
-    //         System.out.println("Incorrect password. Please try again.");
-    //         return;
-    //     }
 
-    //     System.out.print("Enter new password: ");
-    //     String newPassword = sc.nextLine().trim();
-    //     staff.changePassword(newPassword);
-
-    //     System.out.println("Password changed successfully. Please log in again.");
-    // }
     private void generateReports() {
         List<Internship> list = internshipController.getAllInternships();
 

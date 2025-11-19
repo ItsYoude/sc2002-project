@@ -1,7 +1,6 @@
 package UI;
 
 import controller.*;
-
 import java.util.List;
 import java.util.Scanner;
 import models.*;
@@ -53,12 +52,14 @@ public class StudentUI {
                 case "4":
                     withdrawApplication();
                     break;
+                case "5":
+                    boolean changed = student.changePassword();
+                    if (changed) {
+                        continueMenu = false; // log out only if password was changed
+                    }
+                    break;
                 case "6":
                     acceptInternship();
-                    break;
-                case "5":
-                    student.changePassword();
-                    continueMenu = false;
                     break;
                 case "0":
                     System.out.println("Logging out and returning to login screen...");
@@ -144,19 +145,24 @@ public class StudentUI {
 
 
     // private void changePassword() {
+    //     Scanner sc = new Scanner(System.in);
     //     System.out.print("Enter your current password: ");
     //     String current = sc.nextLine().trim();
 
-    //     if (!student.passwordValidator(current)) {
-    //         System.out.println("Incorrect password. Please try again.");
-    //         return;
-    //     }
+    // if (!student.passwordValidator(current)) {
+    //     System.out.println("Incorrect password. Please try again.");
+    //     return;
+    // }
 
-    //     System.out.print("Enter your new password: ");
-    //     String newPassword = sc.nextLine().trim();
-    //     student.changePassword(newPassword);
+    // System.out.print("Enter your new password: ");
+    // String newPassword = sc.nextLine().trim();
 
-    //     System.out.println("Password successfully changed!");
-    //     System.out.println("You will now be logged out. Please login again with your new password.");
+    // // Update object
+    // student.setPassword(newPassword);
+
+    // // Persist immediately
+    // FileService.saveStudents(studentController.getAllStudents());
+
+    // System.out.println("Password successfully changed! You will now be logged out.");
     // }
 }

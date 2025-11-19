@@ -1,19 +1,24 @@
 package controller;
 
-import models.CompanyRepresentative;
-import utility.FileService;
-import models.Internship;
-
 import java.util.*;
+import models.CompanyRepresentative;
+import models.Internship;
+import utility.FileService;
 
 public class CompanyRepController { //interaction between UI and CompanyRepresentative 
-
+    private static CompanyRepController instance;
     private List<CompanyRepresentative> pendingReps = new ArrayList<>();
     private List<CompanyRepresentative> approvedReps = new ArrayList<>();
     private List<CompanyRepresentative> rejectedReps = new ArrayList<>();
+    private List<CompanyRepresentative> companyReps = new ArrayList<>();
 
     public CompanyRepController() {// Constructor
         loadReps();
+        instance = this;
+    }
+
+    public static CompanyRepController getInstance() {
+        return instance;
     }
 
     // Getters for UI/CSS/RepController
@@ -29,16 +34,22 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return rejectedReps;
     }
 
+    public List<CompanyRepresentative> getAllCompanyReps() {
+    return companyReps; 
+}
+
     public final void loadReps() { //load all company rep entries into the two list 
         //clear both list first, then append the latest records into the two list
         pendingReps.clear();
         approvedReps.clear();
         rejectedReps.clear();
+        companyReps.clear();
 
         List<CompanyRepresentative> repsFromFile = FileService.loadCompanyReps();
         for (CompanyRepresentative rep : repsFromFile) {
             // System.out.println(rep.getStatus());
             System.out.println(rep.getName()+rep.isApproved());
+            companyReps.add(rep);   // <--- track all reps
             String status = rep.getStatus() == null ? "" : rep.getStatus().trim(); //null-safe default
                 switch (status) {
                 case "Approved":
@@ -58,17 +69,15 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     
 
     public boolean saveAllReps() {
-        List<CompanyRepresentative> allReps = new ArrayList<>();
-        allReps.addAll(pendingReps);
-        allReps.addAll(approvedReps);
-        allReps.addAll(rejectedReps);
-
-        if (!FileService.saveCompanyReps(allReps)) {
-            System.out.println("Error while saving.");
-            return false;
-        }
-        return true;
+    // Save the master list that contains all reps
+    if (!FileService.saveCompanyReps(companyReps)) {
+        System.out.println("Error while saving.");
+        return false;
     }
+    return true;
+}
+
+
 
     //serach by user id in selected list, (pending or approved)
     private CompanyRepresentative findRepInList(String userId, List<CompanyRepresentative> list) {
@@ -93,7 +102,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         }
 
         CompanyRepresentative rep = new CompanyRepresentative(company_id, name, companyName, department, position,
-                email,"Pending");
+                email,"Pending", "password");
         pendingReps.add(rep);
         //update into the csv file, if fail then remove rep from pending
         if (saveAllReps() == false) {

@@ -54,8 +54,8 @@ public class CompanyRepUI {
                 toggleVisibility();
                 break;
             case "5":
-                representative.changePassword();
-                continueMenu = false;
+                boolean changedRep = representative.changePassword();
+                if (changedRep) continueMenu = false;
                 break;
             case "0":
                 System.out.println("Logging out...");
@@ -239,19 +239,4 @@ public class CompanyRepUI {
         }
     }
 
-    // private void changePassword() {
-    //     System.out.print("Enter your current password: ");
-    //     String current = sc.nextLine().trim();
-
-    //     if (!representative.passwordValidator(current)) {
-    //         System.out.println("Incorrect password. Please try again.");
-    //         return;
-    //     }
-
-    //     System.out.print("Enter new password: ");
-    //     String newPassword = sc.nextLine().trim();
-    //     representative.changePassword(newPassword);
-
-    //     System.out.println("Password changed successfully. Please log in again.");
-    // }
 }
