@@ -11,11 +11,13 @@ public class CompanyRepresentative extends User {
     private String department;
     private String position;
     private String status;
+
+    private SystemController systemController;
     //private boolean approved = false;
     private boolean max_created;
 
-    public CompanyRepresentative(String userId, String name, String companyName, String department, String position, String email,String status,String password) {
-        super(userId, name, email,password); // default password
+    public CompanyRepresentative(String userId, String name, String companyName, String department, String position, String email,String status, String password) {
+        super(userId, name, email, password); 
         this.companyName = companyName;
         this.department = department;
         this.position = position;
@@ -63,33 +65,32 @@ public class CompanyRepresentative extends User {
     }
 
     @Override
-    public String getUserType() {
-        return "Company Representative";
-    }
+    public String getUserType() { return "Company Representative"; }
 
     public boolean changePassword() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter current password: ");
-        String current = sc.nextLine().trim();
+    Scanner sc = new Scanner(System.in);
 
-        if (!getPassword().equals(current)) {
-            System.out.println("Incorrect password.");
-            return false;
-        }
-        System.out.print("Enter new password: ");
-        String newPassword = sc.nextLine().trim();
-        setPassword(newPassword);
+    System.out.print("Enter current password: ");
+    String current = sc.nextLine().trim();
 
-
-        // Save all reps to CSV
-        CompanyRepController controller = CompanyRepController.getInstance();
-        if (controller != null && controller.saveAllReps()) {
-            System.out.println("Password successfully changed!");
-            return true;
-        } else {
-            System.out.println("Error saving password to CSV.");
-            return false;
-        }
-
+    if (!getPassword().equals(current)) {
+        System.out.println("Incorrect password.");
+        return false;
     }
+
+    System.out.print("Enter new password: ");
+    String newPassword = sc.nextLine().trim();
+    setPassword(newPassword);
+
+    // Save all reps to CSV
+    CompanyRepController controller = CompanyRepController.getInstance();
+    if (controller != null && controller.saveAllReps()) {
+        System.out.println("Password successfully changed!");
+        return true;
+    } else {
+        System.out.println("Error saving password to CSV.");
+        return false;
+    }
+}
+
 }

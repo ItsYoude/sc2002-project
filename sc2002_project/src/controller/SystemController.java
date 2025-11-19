@@ -32,13 +32,34 @@ public class SystemController {
      * Authenticate user by ID and password
      */
     public User authenticateUser(String id, String password) {
-        for (User user : users) {
-            if (user.getUserId().equals(id) && user.getPassword().equals(password)) {
+    // reload company reps every time
+    List<CompanyRepresentative> reps = FileService.loadCompanyReps();
+    
+    for (User user : users) { 
+        if (user instanceof CompanyRepresentative) {
+            for (CompanyRepresentative rep : reps) {
+                if (rep.getUserId().equalsIgnoreCase(id) && rep.getPassword().equals(password)) {
+                    return rep;
+                }
+            }
+        } else {
+            if (user.getUserId().equalsIgnoreCase(id) && user.getPassword().equals(password)) {
                 return user;
             }
         }
-        return null;
     }
+    return null;
+}
+
+
+    public void updateUserPassword(String userId, String newPassword) {
+    for (User u : users) {
+        if (u.getUserId().equalsIgnoreCase(userId)) {
+            u.setPassword(newPassword);
+            break;
+        }
+    }
+}
 
     /**
      * Initialize system by loading data from CSV files

@@ -9,17 +9,17 @@ public class FileService {
 
 
     //caven version
-    // private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
-    // private static final String CSS_STAFF_DATA_FILE = "src/data/sample_staff_list.csv";
-    // private static final String COMPANY_REP_DATA_FILE = "src/data/sample_company_representative_list.csv";
-    // private static final String INTERNSHIP_DATA_FILE = "src/data/internship_list.csv";
+    private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
+    private static final String CSS_STAFF_DATA_FILE = "src/data/sample_staff_list.csv";
+    private static final String COMPANY_REP_DATA_FILE = "src/data/sample_company_representative_list.csv";
+    private static final String INTERNSHIP_DATA_FILE = "src/data/internship_list.csv";
 
     
     //youde version
-    private static final String STUDENT_DATA_FILE = "data/sample_student_list.csv";
-    private static final String COMPANY_REP_DATA_FILE = "data/sample_company_representative_list.csv";
-    private static final String CSS_STAFF_DATA_FILE = "data/sample_staff_list.csv";
-    private static final String INTERNSHIP_DATA_FILE = "data/internship_list.csv";
+    // private static final String STUDENT_DATA_FILE = "data/sample_student_list.csv";
+    // private static final String COMPANY_REP_DATA_FILE = "data/sample_company_representative_list.csv";
+    // private static final String CSS_STAFF_DATA_FILE = "data/sample_staff_list.csv";
+    // private static final String INTERNSHIP_DATA_FILE = "data/internship_list.csv";
 
     //deonne version
     // private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
@@ -46,7 +46,7 @@ public class FileService {
                 String accepted = parts.length > 6 ? parts[6].trim() : "";
                 String password = parts[7].trim();
 
-                Student student = new Student(id, name, year, major, email,password);
+                Student student = new Student(id, name, year, major, email, password);
                 students.add(student);
             }
         } catch (IOException e) {
@@ -72,7 +72,9 @@ public class FileService {
                         String.valueOf(s.getYearOfStudy()),
                         s.getEmail(),
                         applied,
-                        accepted,s.getPassword()));
+                        accepted,
+                        s.getPassword()
+                ));
                 bw.newLine();
             }
             return true;
@@ -101,7 +103,7 @@ public class FileService {
                 String password = parts[7].trim();
 
                 CompanyRepresentative rep = new CompanyRepresentative(id, name, companyName, department, position,
-                        email, status,password);
+                        email, status, password);
 
                 repList.add(rep);
             }
@@ -128,7 +130,8 @@ public class FileService {
                         rep.getDepartment(),
                         rep.getPosition(),
                         rep.getEmail(),
-                        rep.getStatus(),rep.getPassword()));
+                        rep.getStatus(),
+                        rep.getPassword()));
                 bw.newLine();
             }
               return true;
@@ -140,30 +143,31 @@ public class FileService {
 
     // Load career center staff
     public static List<CareerCenterStaff> loadCSStaff() {
-        List<CareerCenterStaff> staffList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(CSS_STAFF_DATA_FILE))) {
-            br.readLine(); // skip header
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",", -1);
-                if (parts.length < 6) continue;
+    List<CareerCenterStaff> staffList = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(CSS_STAFF_DATA_FILE))) {
+        br.readLine(); // skip header
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",", -1);
+            if (parts.length < 6) continue; // now at least 6 columns
 
-                String id = parts[0].trim();
-                String name = parts[1].trim();
-                String department = parts[3].trim();
-                String email = parts[4].trim(); 
-                String password = parts[5].trim();   // correct index
+            String id = parts[0].trim();
+            String name = parts[1].trim();
+            String department = parts[3].trim(); // correct index
+            String email = parts[4].trim();      // correct index
+            String password = parts[5].trim();   // correct index
 
-                CareerCenterStaff staff = new CareerCenterStaff(id, name, department, email,password);
-                staffList.add(staff);
-            }
-        } catch (IOException e) {
-            System.out.println("Error loading staff: " + e.getMessage());
+            CareerCenterStaff staff = new CareerCenterStaff(id, name, department, email, password);
+            staffList.add(staff);
         }
-        return staffList;
+    } catch (IOException e) {
+        System.out.println("Error loading staff: " + e.getMessage());
     }
-   //save all career staff
+    return staffList;
+}
 
+
+    //save all career staff
     public static boolean saveStaff(List<CareerCenterStaff> staffList) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(CSS_STAFF_DATA_FILE))) {
             bw.write("StaffID,Name,Role,Department,Email,Password");
@@ -183,8 +187,9 @@ public class FileService {
             System.out.println("Error saving staff: " + e.getMessage());
             return false;
         }
-
     }
+
+
     //load internship
     public static List<Internship> loadInternships() {
         List<Internship> internships = new ArrayList<>();

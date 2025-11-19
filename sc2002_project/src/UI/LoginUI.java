@@ -51,9 +51,30 @@ public void handleLogin() {
             continue;
         }
 
-        if (loggedInUser instanceof CompanyRepresentative rep) {
-            if (!rep.isApproved()) {
-                System.out.println("Your account is pending approval by Career Center Staff.");
+        // Handle company rep approval/rejection
+        if (loggedInUser instanceof CompanyRepresentative) {
+            final String loginId = loggedInUser.getUserId();  // final copy for lambda
+            CompanyRepresentative repFromCSV = companyRepController.getAllCompanyReps().stream()
+                    .filter(r -> r.getUserId().equalsIgnoreCase(loginId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (repFromCSV != null) {
+                loggedInUser = repFromCSV; // assign the CSV version
+                String status = repFromCSV.getStatus();
+
+                if (status.equalsIgnoreCase("Pending")) {
+                    System.out.println("Your account is still pending approval by Career Center Staff.");
+                    continue;
+                }
+
+                if (status.equalsIgnoreCase("Rejected")) {
+                    System.out.println("Your account has been rejected.");
+                    continue;
+                }
+                // If status is Approved → continue to dashboard
+            } else {
+                System.out.println("Error: Company Representative not found in system.");
                 continue;
             }
         }
@@ -63,7 +84,6 @@ public void handleLogin() {
     }
 }
 
-    
     
     public void displayLoginScreen() {
         while (true) {
@@ -112,9 +132,6 @@ public void handleLogin() {
             System.out.print("Enter Email: ");
             String email = sc.nextLine().trim();
 
-
-
-
             boolean success = companyRepController.registerRep(company_id, name, company, dept, position, email);
             if (success == true)
             {
@@ -134,10 +151,6 @@ public void handleLogin() {
     }
 
 
-    
-     
-    
-    
     private void redirectToDashboard(User user) {
         switch (user.getUserType()) {
             case "Student": {

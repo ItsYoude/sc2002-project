@@ -1,7 +1,6 @@
 package UI;
 
 import controller.*;
-
 import java.util.List;
 import java.util.Scanner;
 import models.*;
@@ -53,7 +52,6 @@ public class StudentUI {
                 case "4":
                     withdrawApplication();
                     break;
-
                 case "5":
                     boolean changed = student.changePassword();
                     if (changed) {
