@@ -9,17 +9,17 @@ public class FileService {
 
 
     //caven version
-    private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
-    private static final String CSS_STAFF_DATA_FILE = "src/data/sample_staff_list.csv";
-    private static final String COMPANY_REP_DATA_FILE = "src/data/sample_company_representative_list.csv";
-    private static final String INTERNSHIP_DATA_FILE = "src/data/internship_list.csv";
+    // private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
+    // private static final String CSS_STAFF_DATA_FILE = "src/data/sample_staff_list.csv";
+    // private static final String COMPANY_REP_DATA_FILE = "src/data/sample_company_representative_list.csv";
+    // private static final String INTERNSHIP_DATA_FILE = "src/data/internship_list.csv";
 
     
     //youde version
-    // private static final String STUDENT_DATA_FILE = "data/sample_student_list.csv";
-    // private static final String COMPANY_REP_DATA_FILE = "data/sample_company_representative_list.csv";
-    // private static final String CSS_STAFF_DATA_FILE = "data/sample_staff_list.csv";
-    // private static final String INTERNSHIP_DATA_FILE = "data/internship_list.csv";
+    private static final String STUDENT_DATA_FILE = "data/sample_student_list.csv";
+    private static final String COMPANY_REP_DATA_FILE = "data/sample_company_representative_list.csv";
+    private static final String CSS_STAFF_DATA_FILE = "data/sample_staff_list.csv";
+    private static final String INTERNSHIP_DATA_FILE = "data/internship_list.csv";
 
     //deonne version
     // private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
@@ -35,15 +35,18 @@ public class FileService {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",", -1);
-                if (parts.length < 5) continue;
+                if (parts.length < 8) continue;
 
                 String id = parts[0].trim();
                 String name = parts[1].trim();
                 String major = parts[2].trim();
                 int year = Integer.parseInt(parts[3].trim());
                 String email = parts[4].trim();
+                String applied = parts.length > 5 ? parts[5].trim() : "";
+                String accepted = parts.length > 6 ? parts[6].trim() : "";
+                String password = parts[7].trim();
 
-                Student student = new Student(id, name, year, major, email);
+                Student student = new Student(id, name, year, major, email,password);
                 students.add(student);
             }
         } catch (IOException e) {
@@ -55,7 +58,7 @@ public class FileService {
     public static boolean saveStudents(List<Student> students) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(STUDENT_DATA_FILE))) {
             // write header
-            bw.write("StudentID,Name,Major,Year,Email,AppliedInternships,AcceptedInternship");
+            bw.write("StudentID,Name,Major,Year,Email,AppliedInternships,AcceptedInternship,Password");
             bw.newLine();
 
             for (Student s : students) {
@@ -69,7 +72,7 @@ public class FileService {
                         String.valueOf(s.getYearOfStudy()),
                         s.getEmail(),
                         applied,
-                        accepted));
+                        accepted,s.getPassword()));
                 bw.newLine();
             }
             return true;
@@ -86,7 +89,7 @@ public class FileService {
             String line = br.readLine(); //skip header
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",", -1);
-                if (parts.length < 7)
+                if (parts.length < 8)
                     continue; //invalid row
                 String id = parts[0].trim();
                 String name = parts[1].trim();
@@ -95,9 +98,10 @@ public class FileService {
                 String position = parts[4].trim();
                 String email = parts[5].trim();
                 String status = parts[6].trim();
+                String password = parts[7].trim();
 
                 CompanyRepresentative rep = new CompanyRepresentative(id, name, companyName, department, position,
-                        email, status);
+                        email, status,password);
 
                 repList.add(rep);
             }
@@ -113,7 +117,7 @@ public class FileService {
     public static boolean saveCompanyReps(List<CompanyRepresentative> reps) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(COMPANY_REP_DATA_FILE))) {
             // write header
-            bw.write("CompanyRepID,Name,CompanyName,Department,Position,Email,Status");
+            bw.write("CompanyRepID,Name,CompanyName,Department,Position,Email,Status,Password");
             bw.newLine();
 
             for (CompanyRepresentative rep : reps) {
@@ -124,7 +128,7 @@ public class FileService {
                         rep.getDepartment(),
                         rep.getPosition(),
                         rep.getEmail(),
-                        rep.getStatus()));
+                        rep.getStatus(),rep.getPassword()));
                 bw.newLine();
             }
               return true;
@@ -142,14 +146,15 @@ public class FileService {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",", -1);
-                if (parts.length < 4) continue;
+                if (parts.length < 6) continue;
 
                 String id = parts[0].trim();
                 String name = parts[1].trim();
-                String department = parts[2].trim();
-                String email = parts[3].trim();
+                String department = parts[3].trim();
+                String email = parts[4].trim(); 
+                String password = parts[5].trim();   // correct index
 
-                CareerCenterStaff staff = new CareerCenterStaff(id, name, department, email);
+                CareerCenterStaff staff = new CareerCenterStaff(id, name, department, email,password);
                 staffList.add(staff);
             }
         } catch (IOException e) {
@@ -157,7 +162,29 @@ public class FileService {
         }
         return staffList;
     }
+   //save all career staff
 
+    public static boolean saveStaff(List<CareerCenterStaff> staffList) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(CSS_STAFF_DATA_FILE))) {
+            bw.write("StaffID,Name,Role,Department,Email,Password");
+            bw.newLine();
+            for (CareerCenterStaff s : staffList) {
+                bw.write(String.join(",",
+                        s.getUserId(),
+                        s.getName(),
+                        "Career Center Staff",
+                        s.getDepartment(),
+                        s.getEmail(),
+                        s.getPassword()));
+                bw.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("Error saving staff: " + e.getMessage());
+            return false;
+        }
+
+    }
     //load internship
     public static List<Internship> loadInternships() {
         List<Internship> internships = new ArrayList<>();

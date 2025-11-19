@@ -76,7 +76,6 @@ public class InternshipController {
     // Build a fresh pipeline for each method call
     private FilterPipeline buildPipelineForStudent(Student student) {
         FilterPipeline pipeline = new FilterPipeline();
-
         pipeline.add(new ApprovedFilter());      // only Approved internships
         pipeline.add(new NotFilledFilter());     // optionally filter NotFilled
         pipeline.add(new VisibilityFilter());
@@ -92,7 +91,13 @@ public class InternshipController {
         FilterPipeline pipeline = buildPipelineForStudent(student);
         List<Internship> filtered = pipeline.filter(internships);
         return defaultSorter.sort(filtered);
-        
+    }
+    
+    public List<Internship> getEligibleInternships(Student student)
+    {
+        FilterPipeline pipeline = buildPipelineForStudent(student);
+        List<Internship> filtered = pipeline.filter(internships);
+        return filtered;  
     }
     
     

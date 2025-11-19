@@ -5,6 +5,8 @@ import controller.*;
 import models.CompanyRepresentative;
 import models.User;
 
+import models.*;
+
 
 
 public class MainApp {
@@ -15,5 +17,9 @@ public class MainApp {
         System.out.println("============Staring Login UI==========");
         systemController.initializeSystem();
         systemController.startSystem();
+
+
+
+
     }
 }

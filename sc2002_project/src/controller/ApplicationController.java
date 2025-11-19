@@ -128,18 +128,19 @@ public class ApplicationController {
     }
 
     // View applications for an internship (for company rep)
-    public void viewApplicationsForInternship(Internship internship) {
+    public boolean viewApplicationsForInternship(Internship internship) {
         System.out.println("\n--- Applications for " + internship.getTitle() + " ---");
-        boolean found = false;
+        //boolean found = false;
         for (Application app : applications) {
             if (app.getInternship().getId().equalsIgnoreCase(internship.getId())) {
                 System.out.println(app);
-                found = true;
+                return true;
             }
         }
-        if (!found) {
-            System.out.println("No applications found for this internship.");
-        }
+        // if (!found) {
+        //     System.out.println("No applications found for this internship.");
+        // }
+        return false;
     }
 
     // Update application status (approve/reject)
@@ -182,8 +183,27 @@ public class ApplicationController {
         // Assuming you have a list of all applications
         return applications.stream()
                 .filter(app -> app.getStudent().getUserId().equals(student.getUserId()) &&
-                            app.getInternship().getId().equals(internship.getId()))
+                        app.getInternship().getId().equals(internship.getId()))
                 .findFirst()
                 .orElse(null); // or throw a custom exception if not found
     }
+    
+    public boolean isPending(String student_name, Internship internship) {
+        for (Application app : applications) {
+            if (app.getInternship().getId().equalsIgnoreCase(internship.getId())) {
+
+                if (app.getStudent().getName().equalsIgnoreCase(student_name)) {
+                    if (app.getStatus().equalsIgnoreCase("Pending")) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+            }
+        }
+        //System.out.println("You entered a student that did not apply for this Internship");
+        return false;
+    }
+
 }

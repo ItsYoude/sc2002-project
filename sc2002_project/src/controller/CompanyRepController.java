@@ -11,10 +11,27 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     private List<CompanyRepresentative> pendingReps = new ArrayList<>();
     private List<CompanyRepresentative> approvedReps = new ArrayList<>();
     private List<CompanyRepresentative> rejectedReps = new ArrayList<>();
+    private static CompanyRepController instance;
+
+
+    private List<CompanyRepresentative> companyReps = new ArrayList<>();
 
     public CompanyRepController() {// Constructor
         loadReps();
+        instance = this;
     }
+    
+    public static CompanyRepController getInstance() {
+        return instance;
+    }
+    
+    public List<CompanyRepresentative> getAllCompanyReps() {
+        return companyReps;
+    }
+
+
+
+
 
     // Getters for UI/CSS/RepController
     public List<CompanyRepresentative> getPendingReps() {
@@ -34,11 +51,13 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         pendingReps.clear();
         approvedReps.clear();
         rejectedReps.clear();
+        companyReps.clear();
 
         List<CompanyRepresentative> repsFromFile = FileService.loadCompanyReps();
         for (CompanyRepresentative rep : repsFromFile) {
             // System.out.println(rep.getStatus());
-            System.out.println(rep.getName()+rep.isApproved());
+            System.out.println(rep.getName() + rep.isApproved());
+            companyReps.add(rep);   // <--- track all reps
             String status = rep.getStatus() == null ? "" : rep.getStatus().trim(); //null-safe default
                 switch (status) {
                 case "Approved":
@@ -69,6 +88,23 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         }
         return true;
     }
+
+
+    //caven version
+    
+    // public boolean saveAllReps() {
+
+    // // Save the master list that contains all reps
+
+    // if (!FileService.saveCompanyReps(companyReps)) {
+    //     System.out.println("Error while saving.");
+    //     return false;
+    // }
+    // return true;
+    // }
+
+
+
 
     //serach by user id in selected list, (pending or approved)
     private CompanyRepresentative findRepInList(String userId, List<CompanyRepresentative> list) {
@@ -159,6 +195,25 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
             }
         }
         return true;
+    }
+
+
+    public void findIfMaxInternshipCreated(CompanyRepresentative rep,InternshipController internshipController)
+    {
+        List<Internship> allInternships = internshipController.getAllInternships();
+        long count = allInternships.stream()
+            .filter(i -> i.getRepresentativeId().equals(rep.getUserId())) 
+                .count();
+            
+        if (count >= 5)
+        {
+            rep.setMaxCreated(true);
+        }
+        else
+        {
+            rep.setMaxCreated(false);
+        }
+        System.out.println((count));
     }
         
 
