@@ -52,9 +52,21 @@ public class CareerCenterStaff extends User {
     System.out.print("Enter your new password: ");
     String newPassword = sc.nextLine().trim();
 
+    // Empty password check
+    if (newPassword.isEmpty()) {
+        System.out.println("New password cannot be empty.");
+        return false;
+    }
+
+    // Same password check
+    if (newPassword.equals(current)) {
+        System.out.println("New password cannot be the same as the old password.");
+        return false;
+    }
+
+    // Set new password in memory
     setPassword(newPassword);
 
-    // --- Fix: load all staff, update this staff, save ---
     List<CareerCenterStaff> allStaff = FileService.loadCSStaff();
     for (CareerCenterStaff staff : allStaff) {
         if (staff.getUserId().equals(this.getUserId())) {

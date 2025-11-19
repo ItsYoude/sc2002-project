@@ -31,64 +31,71 @@ public class LoginUI {
     private void handleLogin() {
         systemController.initializeSystem();
 
-        while (true) {
-            System.out.println("\nInternship Placement Management System");
-            System.out.print("Enter User ID / Email (or type exit to quit): ");
-            String id = sc.nextLine().trim();
+    while (true) {
+        System.out.println("\nInternship Placement Management System");
+        System.out.print("Enter User ID (or type exit to quit): ");
+        String id = sc.nextLine().trim();
 
             if (id.equalsIgnoreCase("exit")) {
                 System.out.println("See you again!");
                 break;
             }
 
-            System.out.print("Enter Password: ");
-            String password = sc.nextLine().trim();
+        // STEP 1 — Check whether ID exists FIRST
+        Object idCheck = systemController.authenticateUser(id, ""); // blank password
 
-            User loggedInUser = systemController.authenticateUser(id, password);
-
-        if (loggedInUser == null) {
-            System.out.println("Invalid ID or password! Please try again!");
+        if (idCheck == null) {
+            System.out.println("User ID does not exist. Please try again.");
             continue;
         }
 
-        // Handle company rep approval/rejection
-        if (loggedInUser instanceof CompanyRepresentative) {
-            final String loginId = loggedInUser.getUserId();  // final copy for lambda
-            CompanyRepresentative repFromCSV = companyRepController.getAllCompanyReps().stream()
-                    .filter(r -> r.getUserId().equalsIgnoreCase(loginId))
-                    .findFirst()
-                    .orElse(null);
+        // STEP 2 — Now ask for password
+        System.out.print("Enter Password: ");
+        String password = sc.nextLine().trim();
 
-            if (repFromCSV != null) {
-                loggedInUser = repFromCSV; // assign the CSV version
-                String status = repFromCSV.getStatus();
+        Object authResult = systemController.authenticateUser(id, password);
 
-                if (status.equalsIgnoreCase("Pending")) {
-                    System.out.println("Your account is still pending approval by Career Center Staff.");
-                    continue;
-                }
-
-                if (status.equalsIgnoreCase("Rejected")) {
-                    System.out.println("Your account has been rejected.");
-                    continue;
-                }
-                // If status is Approved → continue to dashboard
-            } else {
-                System.out.println("Error: Company Representative not found in system.");
-                continue;
-            }
-
-            if (loggedInUser instanceof CompanyRepresentative rep) {
-                if (!rep.isApproved()) {
-                    System.out.println("Your account is pending approval by Career Center Staff.");
-                    continue;
-                }
-            }
-
-            System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
-            redirectToDashboard(loggedInUser);
+        // password wrong → returns Boolean.FALSE
+        if (authResult instanceof Boolean && authResult.equals(Boolean.FALSE)) {
+            System.out.println("Incorrect password. Please try again.");
+            continue;
         }
-    }} 
+
+        User loggedInUser = (User) authResult;
+
+
+        if (loggedInUser instanceof CompanyRepresentative) {
+    final String loginId = loggedInUser.getUserId();  
+
+    CompanyRepresentative repFromCSV = companyRepController
+            .getAllCompanyReps().stream()
+            .filter(r -> r.getUserId().equalsIgnoreCase(loginId))
+            .findFirst()
+            .orElse(null);
+
+    if (repFromCSV != null) {
+        loggedInUser = repFromCSV;
+        String status = repFromCSV.getStatus();
+
+        if (status.equalsIgnoreCase("Pending")) {
+            System.out.println("Your account is still pending approval by Career Center Staff.");
+            continue;
+        } else if (status.equalsIgnoreCase("Rejected")) {
+            System.out.println("Your account has been rejected.");
+            continue;
+        }
+        // else → status is Approved, continue
+    } else {
+        System.out.println("Error: Company Representative not found in system.");
+        continue;
+    }
+}
+        // Outside the CompanyRep check
+    System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
+    redirectToDashboard(loggedInUser);
+}
+}
+
 
     
     public void displayLoginScreen() {

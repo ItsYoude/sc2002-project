@@ -80,6 +80,17 @@ public class CompanyRepresentative extends User {
 
     System.out.print("Enter new password: ");
     String newPassword = sc.nextLine().trim();
+
+    if (newPassword.isEmpty()) {
+        System.out.println("New password cannot be empty.");
+        return false;
+    }
+
+    if (newPassword.equals(current)) {
+        System.out.println("New password cannot be the same as the old password.");
+        return false;
+    }
+
     setPassword(newPassword);
 
     // Save all reps to CSV

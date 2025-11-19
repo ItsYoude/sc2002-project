@@ -125,6 +125,16 @@ public boolean changePassword() {
     System.out.print("Enter your new password: ");
     String newPassword = sc.nextLine().trim();
 
+    if (newPassword.isEmpty()) {
+        System.out.println("New password cannot be empty.");
+        return false;
+    }
+
+    if (newPassword.equals(current)) {
+        System.out.println("New password cannot be the same as your old password.");
+        return false;
+    }
+
     setPassword(newPassword); // update in memory
 
     boolean success = FileService.saveStudents(StudentController.getInstance().getAllStudents());
@@ -137,7 +147,5 @@ public boolean changePassword() {
         return false;
     }
 }
-
-
 
 }

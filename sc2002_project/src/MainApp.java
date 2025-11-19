@@ -17,9 +17,5 @@ public class MainApp {
         System.out.println("============Staring Login UI==========");
         systemController.initializeSystem();
         systemController.startSystem();
-
-
-
-
     }
 }
