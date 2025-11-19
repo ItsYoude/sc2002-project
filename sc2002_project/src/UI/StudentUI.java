@@ -168,6 +168,11 @@ public class StudentUI {
     private void acceptInternship() {
         System.out.print("Enter Internship ID to accept: ");
         String id = sc.nextLine().trim();
+        if (id.isEmpty())
+        {
+            System.out.println("Do not enter blankspace as ID.");
+            return;
+        }
 
         boolean success = studentController.acceptOffer(student, id);
         if (!success) {

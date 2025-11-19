@@ -40,8 +40,18 @@ public class Student extends User {
         for (AppliedRecord record : appliedInternshipId) {
             if (record.getInternshipId().equalsIgnoreCase(id)) {
                 record.setStatus(status);
-                System.out.println("Hi");
                 return; // done
+            }
+        }
+    }
+
+    public void withdrawAllExcept(String id)
+    {
+        for (AppliedRecord record : appliedInternshipId) 
+        {
+            if (!record.getInternshipId().equalsIgnoreCase(id))
+            {
+                record.setStatus("Withdrawn");
             }
         }
     }
@@ -159,31 +169,31 @@ public class Student extends User {
 
     // }
 
-    public void acceptInternship(String internshipId, InternshipController internshipController) {
-        AppliedRecord toAccept = null;
+    public void acceptInternship(String internshipId) {
+        // AppliedRecord toAccept = null;
 
-        for (AppliedRecord record : appliedInternshipId) {
-            if (record.getInternshipId().equalsIgnoreCase(internshipId)) {
-                Internship i = internshipController.getInternshipById(internshipId);
-                if (i == null || !"Successful".equalsIgnoreCase(record.getStatus())) {
-                    System.out.println("Cannot accept. Internship status must be 'Successful'.");
-                    return;
-                }
-                toAccept = record;
-                break;
-            }
-        }
+        // for (AppliedRecord record : appliedInternshipId) {
+        //     if (record.getInternshipId().equalsIgnoreCase(internshipId)) {
+        //         Internship i = internshipController.getInternshipById(internshipId);
+        //         if (i == null || !"Successful".equalsIgnoreCase(record.getStatus())) {
+        //             System.out.println("Cannot accept. Internship status must be 'Successful'.");
+        //             return;
+        //         }
+        //         toAccept = record;
+        //         break;
+        //     }
+        // }
 
-        if (toAccept == null) {
-            System.out.println("You have not applied for this internship.");
-            return;
-        }
+        // if (toAccept == null) {
+        //     System.out.println("You have not applied for this internship.");
+        //     return;
+        // }
         // Accept the chosen internship
         acceptedInternshipId = internshipId;
         // Remove all other applied internships
-        appliedInternshipId.removeIf(record -> !record.getInternshipId().equalsIgnoreCase(internshipId));
-        System.out.println("Accepted internship: " + internshipController.getInternshipById(internshipId).getTitle() +
-                ". All other applications withdrawn.");
+        // appliedInternshipId.removeIf(record -> !record.getInternshipId().equalsIgnoreCase(internshipId));
+        // System.out.println("Accepted internship: " + internshipController.getInternshipById(internshipId).getTitle() +
+        //         ". All other applications withdrawn.");
 
 
     }

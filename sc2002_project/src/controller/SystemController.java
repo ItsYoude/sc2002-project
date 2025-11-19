@@ -109,7 +109,7 @@ public class SystemController {
         // Pass company reps to userController
         // userController.setCompanyReps(reps);
         List<Application> appList = FileService.loadApplications(students, internshipController);
-        this.applicationController = new ApplicationController(appList);
+        this.applicationController.setApplicationList(appList);
 
     }
 

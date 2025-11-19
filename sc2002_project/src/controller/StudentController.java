@@ -97,14 +97,12 @@ public class StudentController {
             System.out.println("You have already accepted an internship.");
             return false;
         }
-
         // Find the internship
         Internship internship = internshipController.getInternshipById(internshipId);
         if (internship == null) {
             System.out.println("Internship not found.");
             return false;
         }
-
         // Get the application for this internship
         Application app = applicationController.getApplication(student, internship);
         if (app == null) {
@@ -113,33 +111,39 @@ public class StudentController {
         }
 
         // Only successful applications can be accepted
-        if (!app.getStatus().equalsIgnoreCase("Approved")) {    //need change to successful
+        if (!app.getStatus().equalsIgnoreCase("Successful")) {    //need change to successful
             System.out.println("Only successful applications can be accepted.");
             return false;
         }
 
-        // Accept this placement
+        // Accept this placement0
+
         app.setStatus("Accepted");
-        student.acceptInternship(internshipId, internshipController);
+        student.acceptInternship(internshipId);
 
         // Withdraw all other active applications
         List<Application> studentApps = applicationController.getApplicationsByStudent(student);
         for (Application otherApp : studentApps) {
             if (!otherApp.getInternship().getId().equalsIgnoreCase(internshipId) &&
-                !otherApp.getStatus().equalsIgnoreCase("Withdrawn") &&
-                !otherApp.getStatus().equalsIgnoreCase("Accepted") &&
-                !otherApp.getStatus().equalsIgnoreCase("Unsuccessful")) {
+                    !otherApp.getStatus().equalsIgnoreCase("Withdrawn") &&
+                    !otherApp.getStatus().equalsIgnoreCase("Accepted") &&
+                    !otherApp.getStatus().equalsIgnoreCase("Unsuccessful")) {
                 otherApp.setStatus("Withdrawn");
+          
+
             }
         }
+
+      
+        student.withdrawAllExcept(internshipId);
+        List<Student> student_list = StudentController.getAllStudents();
+        FileService.saveStudents(student_list);
+
 
 
         System.out.println(
                 "Offer accepted for " + internship.getTitle() + ". All other applications have been withdrawn.");
         
-
-        //save to csv
-        FileService.saveStudents(students);
         return true;
     }
 
