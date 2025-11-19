@@ -28,18 +28,18 @@ public class LoginUI {
         this.sc = new Scanner(System.in);
     }
 
-public void handleLogin() {
-    systemController.initializeSystem();
+    private void handleLogin() {
+        systemController.initializeSystem();
 
     while (true) {
         System.out.println("\nInternship Placement Management System");
         System.out.print("Enter User ID (or type exit to quit): ");
         String id = sc.nextLine().trim();
 
-        if (id.equalsIgnoreCase("exit")) {
-            System.out.println("See you again!");
-            break;
-        }
+            if (id.equalsIgnoreCase("exit")) {
+                System.out.println("See you again!");
+                break;
+            }
 
         // STEP 1 — Check whether ID exists FIRST
         Object idCheck = systemController.authenticateUser(id, ""); // blank password
@@ -65,37 +65,35 @@ public void handleLogin() {
 
 
         if (loggedInUser instanceof CompanyRepresentative) {
-            final String loginId = loggedInUser.getUserId();  // for lambda
+    final String loginId = loggedInUser.getUserId();  
 
-            CompanyRepresentative repFromCSV = companyRepController
-                    .getAllCompanyReps().stream()
-                    .filter(r -> r.getUserId().equalsIgnoreCase(loginId))
-                    .findFirst()
-                    .orElse(null);
+    CompanyRepresentative repFromCSV = companyRepController
+            .getAllCompanyReps().stream()
+            .filter(r -> r.getUserId().equalsIgnoreCase(loginId))
+            .findFirst()
+            .orElse(null);
 
-            if (repFromCSV != null) {
-                loggedInUser = repFromCSV;
-                String status = repFromCSV.getStatus();
+    if (repFromCSV != null) {
+        loggedInUser = repFromCSV;
+        String status = repFromCSV.getStatus();
 
-                if (status.equalsIgnoreCase("Pending")) {
-                    System.out.println("Your account is still pending approval by Career Center Staff.");
-                    continue;
-                }
-
-                if (status.equalsIgnoreCase("Rejected")) {
-                    System.out.println("Your account has been rejected.");
-                    continue;
-                }
-            } else {
-                System.out.println("Error: Company Representative not found in system.");
-                continue;
-            }
+        if (status.equalsIgnoreCase("Pending")) {
+            System.out.println("Your account is still pending approval by Career Center Staff.");
+            continue;
+        } else if (status.equalsIgnoreCase("Rejected")) {
+            System.out.println("Your account has been rejected.");
+            continue;
         }
-
-        System.out.println("Welcome " + loggedInUser.getName() 
-                           + " (" + loggedInUser.getUserType() + ")");
-        redirectToDashboard(loggedInUser);
+        // else → status is Approved, continue
+    } else {
+        System.out.println("Error: Company Representative not found in system.");
+        continue;
     }
+}
+        // Outside the CompanyRep check
+    System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
+    redirectToDashboard(loggedInUser);
+}
 }
 
 
@@ -126,7 +124,7 @@ public void handleLogin() {
     }
 
 
-    public void handleCompanyRepRegistration() {
+    private void handleCompanyRepRegistration() {
             System.out.println("Register as Company Representative");
             
             System.out.println("Enter Company ID: ");
