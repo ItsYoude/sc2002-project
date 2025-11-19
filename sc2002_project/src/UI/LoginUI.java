@@ -46,10 +46,6 @@ public class LoginUI {
 
             User loggedInUser = systemController.authenticateUser(id, password);
 
-<<<<<<< HEAD
-            if (loggedInUser == null) {
-                System.out.println("Invalid ID or password! Please try again!");
-=======
         if (loggedInUser == null) {
             System.out.println("Invalid ID or password! Please try again!");
             continue;
@@ -79,7 +75,6 @@ public class LoginUI {
                 // If status is Approved → continue to dashboard
             } else {
                 System.out.println("Error: Company Representative not found in system.");
->>>>>>> 291c9fc3d790ad675582d027f2feb5512d13be6a
                 continue;
             }
 
@@ -93,7 +88,7 @@ public class LoginUI {
             System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
             redirectToDashboard(loggedInUser);
         }
-    }
+    }} 
 
     
     public void displayLoginScreen() {
