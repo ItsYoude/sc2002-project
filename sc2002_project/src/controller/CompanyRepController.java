@@ -91,27 +91,39 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
 
     // Register a new rep (adds to pending list)
     public boolean registerRep(String company_id, String name, String companyName, String department, String position,
-            String email) {
+        String email) {
 
-        //check if userID exist in system before registering
-        if (findRepInList(company_id, pendingReps) != null ||
-            findRepInList(company_id, approvedReps) != null ||
-            findRepInList(company_id, rejectedReps) != null) {
-            System.out.println("Registration failed: CompanyRepID already exists.");
-            return false;
-        }
-
-        CompanyRepresentative rep = new CompanyRepresentative(company_id, name, companyName, department, position,
-                email,"Pending", "password");
-        pendingReps.add(rep);
-        //update into the csv file, if fail then remove rep from pending
-        if (saveAllReps() == false) {
-            pendingReps.remove(rep);
-            return false;
-        } else {
-            return true;
-        }
+    // Check if userID exists in the system before registering
+    if (findRepInList(company_id, pendingReps) != null ||
+        findRepInList(company_id, approvedReps) != null ||
+        findRepInList(company_id, rejectedReps) != null) {
+        System.out.println("Registration failed: CompanyRepID already exists.");
+        return false;
     }
+
+    // Create new CompanyRepresentative with default password "password" and status "Pending"
+    CompanyRepresentative rep = new CompanyRepresentative(
+            company_id, name, companyName, department, position, email, "Pending", "password"
+    );
+
+    // Add to master list for CSV saving
+    companyReps.add(rep);
+
+    // Add to pending list for UI/logic
+    pendingReps.add(rep);
+
+    // Save all reps to CSV
+    if (!saveAllReps()) {
+        // If saving fails, rollback both lists
+        pendingReps.remove(rep);
+        companyReps.remove(rep);
+        System.out.println("Error saving new representative. Please try again.");
+        return false;
+    }
+
+    System.out.println("Registration successful! Pending approval by Career Center Staff.");
+    return true;
+}
 
     //Approve a rep
     //each rep account is tied to unique company ID

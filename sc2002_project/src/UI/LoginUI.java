@@ -132,9 +132,6 @@ public void handleLogin() {
             System.out.print("Enter Email: ");
             String email = sc.nextLine().trim();
 
-
-
-
             boolean success = companyRepController.registerRep(company_id, name, company, dept, position, email);
             if (success == true)
             {
