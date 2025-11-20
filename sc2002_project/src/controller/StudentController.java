@@ -3,7 +3,15 @@ package controller;
 import java.util.*;
 import java.util.stream.Collectors;
 import models.*;
+import utility.ClosingDateFilter;
 import utility.FileService;
+import utility.FilterManager;
+import utility.FilterPipeline;
+import utility.LevelFilter;
+import utility.MajorFilter;
+import utility.StatusFilter;
+import utility.UserFilterSettings;
+import utility.VisibilityFilter;
 /*
 manage actions Student can perform
     - View available internships
@@ -24,15 +32,17 @@ public class StudentController {
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
     private static List<Student> students; // all students loaded from CSV
+    private final FilterManager filterManager; 
 
     public StudentController(CSSController cssController, InternshipController internshipController,
                              ApplicationController applicationController,
-                             List<Student> students) {
+                             List<Student> students,FilterManager filterManager) {
         this.cssController = cssController;
         this.internshipController = internshipController;
         this.applicationController = applicationController;
         this.students = students;
         instance = this;
+        this.filterManager = filterManager;
     }
 
     /**
@@ -193,5 +203,43 @@ public class StudentController {
     public static List<Student> getAllStudents() {
         return students;
     }
+
+
+
+
+    public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
+        UserFilterSettings settings = filterManager.getFilters(userId);
+
+        FilterPipeline pipeline = new FilterPipeline();
+
+        if (settings != null) {
+            pipeline.add(new StatusFilter(settings.getStatus()));
+            pipeline.add(new LevelFilter(settings.getLevel()));
+            pipeline.add(new MajorFilter(settings.getMajor()));
+            pipeline.add(new ClosingDateFilter(settings.getClosingBefore()));
+            // add other filters as needed
+            //students should not be able to see non visible
+            pipeline.add(new VisibilityFilter());
+        }
+
+        // Always add default sorting (alphabetical)
+        pipeline.add(internships -> {
+            internships.sort(Comparator.comparing(Internship::getTitle, String.CASE_INSENSITIVE_ORDER));
+            return internships;
+        });
+
+        return pipeline.filter(all);
+
+    }
+    
+    public void saveUserFilterSettings(Student student, UserFilterSettings settings) {
+        filterManager.setFilters(student.getUserId(), settings);
+    }
+
+
+
+
+
+
 
 }

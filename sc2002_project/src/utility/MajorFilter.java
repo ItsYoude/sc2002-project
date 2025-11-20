@@ -13,7 +13,8 @@ public class MajorFilter implements InternshipFilter {
 
     @Override
     public List<Internship> filter(List<Internship> internships) {
-        if (major.equalsIgnoreCase("All")) return internships;
+        if (major.equalsIgnoreCase("All"))
+            return internships;
         return internships.stream()
                 .filter(i -> i.getMajor().equalsIgnoreCase(major))
                 .collect(Collectors.toList());

@@ -1,11 +1,14 @@
 package UI;
 
 import controller.*;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 import models.*;
 import utility.IInternshipSorter;
 import utility.TitleSorter;
+import utility.UserFilterSettings;
 
 public class StudentUI {
     private final Student student;
@@ -28,13 +31,14 @@ public class StudentUI {
 
         while (continueMenu) {
             System.out.println("\n--- Student Dashboard ---");
-            System.out.println("1. View Internship Opportunities");
+            System.out.println("1. View Eliigible Internship Opportunities");
             System.out.println("2. View My Applications");
             System.out.println("3. Apply for Internship");
             System.out.println("4. Withdraw Application");
             System.out.println("5. Change Password");
             System.out.println("6. Accept Application");
             System.out.println("7. View Withdraw Applications");
+            System.out.println("8. View All Internship Opportunities (Filtered)");
             System.out.println("0. Logout");
             System.out.print("Select option: ");
 
@@ -65,6 +69,9 @@ public class StudentUI {
                 case "7":
                     studentController.getAllWithdrawApplications(student);
                     break;
+                case "8":
+                    viewUserFilteredInternships();
+                    break;
                 case "0":
                     System.out.println("Logging out and returning to login screen...");
                     continueMenu = false;
@@ -88,7 +95,7 @@ public class StudentUI {
         // 2. UI handles presentation (Printing to console)
         System.out.println("\n--- Internship Opportunities for " + student.getMajor() + " ---");
         System.out.println("(Filtered by eligibility, visible status, and sorted by Title)");
-        
+
         if (opportunities.isEmpty()) {
             System.out.println("No internships are currently available based on your profile and visibility settings.");
         } else {
@@ -97,7 +104,88 @@ public class StudentUI {
                 System.out.println(opp);
             }
         }
+
     }
+    
+
+    private void viewUserFilteredInternships()
+    {
+           
+    System.out.println("Fetching and sorting internships for your profile...");
+
+    
+    // Optionally ask the student to set filters
+    System.out.println("Do you want to set filters? (y/n): ");
+    String choice = sc.nextLine().trim();
+    if (choice.equalsIgnoreCase("y")) {
+        UserFilterSettings settings = new UserFilterSettings();
+
+        System.out.print("Filter by Status (Approved/Pending/All): ");
+        String status = sc.nextLine().trim();
+        if (status.isEmpty())
+        {
+            System.out.println("Do not leave blank.");
+            return;
+        }
+            if (!status.equalsIgnoreCase("Approved") &&
+            !status.equalsIgnoreCase("Pending") &&
+                !status.equalsIgnoreCase("All")) {
+            System.out.println("Invalid status filter.");
+            return;
+        }
+         settings.setStatus(status);
+        
+
+
+        System.out.print("Filter by Major (or leave blank for all): ");
+        String major = sc.nextLine().trim();
+        settings.setMajor(major.isEmpty() ? "All" : major);
+
+        System.out.print("Filter by Level (Basic/Intermediate/Advanced/All): ");
+        String level = sc.nextLine().trim();
+        //settings.setLevel(level.isEmpty() ? "All" : level);
+        if (level.isEmpty())
+        {
+            System.out.println("Do not leave blank");
+            return;
+        }
+        if ((!level.equalsIgnoreCase("Basic") &&
+            !level.equalsIgnoreCase("Intermediate") &&
+                !level.equalsIgnoreCase("Advanced") 
+                && !level.equalsIgnoreCase("All"))) {
+
+            System.out.println("Invalid level filter.");
+            return;
+        }
+        settings.setLevel(level);
+
+        
+
+        System.out.print("Filter by Closing Date (yyyy-MM-dd) or leave blank for no date filter: ");
+        String dateStr = sc.nextLine().trim();
+        if (!dateStr.isEmpty()) {
+            settings.setClosingBefore(LocalDate.parse(dateStr));
+        }
+
+        // Save filter in memory for this student
+        studentController.saveUserFilterSettings(student, settings);
+    }
+
+    // Retrieve filtered and sorted internships
+    List<Internship> test = internshipController.getAllInternships();
+    List<Internship> filtered = studentController.getFilteredInternships(student.getUserId(),test);
+    if (filtered.isEmpty()) {
+        System.out.println("No internships match your filters.");
+    } else {
+        System.out.println("--- Filtered Internships ---");
+        for (Internship i : filtered) {
+            System.out.println(i);
+        }
+    }
+
+    }
+
+
 
     private void viewMyApplications() {
         applicationController.viewApplications(student);

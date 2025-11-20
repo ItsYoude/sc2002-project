@@ -3,7 +3,15 @@ package controller;
 import java.util.*;
 import models.CompanyRepresentative;
 import models.Internship;
+import models.Student;
+import utility.ClosingDateFilter;
 import utility.FileService;
+import utility.FilterManager;
+import utility.FilterPipeline;
+import utility.LevelFilter;
+import utility.MajorFilter;
+import utility.StatusFilter;
+import utility.UserFilterSettings;
 
 public class CompanyRepController { //interaction between UI and CompanyRepresentative 
     private List<CompanyRepresentative> pendingReps = new ArrayList<>();
@@ -12,8 +20,11 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     private static CompanyRepController instance;
 
     private List<CompanyRepresentative> companyReps = new ArrayList<>();
+    private final FilterManager filterManager; 
 
-    public CompanyRepController() {// Constructor
+
+    public CompanyRepController(FilterManager filterManager) {// Constructor
+        this.filterManager = filterManager;
         loadReps();
         instance = this;
     }
@@ -216,5 +227,41 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         }
         //System.out.println((count));
     }
+
+
+     public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
+        UserFilterSettings settings = filterManager.getFilters(userId);
+
+        FilterPipeline pipeline = new FilterPipeline();
+
+        if (settings != null) {
+            pipeline.add(new StatusFilter(settings.getStatus()));
+            pipeline.add(new LevelFilter(settings.getLevel()));
+            pipeline.add(new MajorFilter(settings.getMajor()));
+            pipeline.add(new ClosingDateFilter(settings.getClosingBefore()));
+            // add other filters as needed
+        }
+
+        // Always add default sorting (alphabetical)
+        pipeline.add(internships -> {
+            internships.sort(Comparator.comparing(Internship::getTitle, String.CASE_INSENSITIVE_ORDER));
+            return internships;
+        });
+
+        return pipeline.filter(all);
+
+    }
+    
+    public void saveUserFilterSettings(CompanyRepresentative companyRepresentative, UserFilterSettings settings) {
+        filterManager.setFilters(companyRepresentative.getUserId(), settings);
+    }
+
+
+
+
+
+
+
+
 
 }

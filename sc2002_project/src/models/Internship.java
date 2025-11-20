@@ -87,8 +87,8 @@ public class Internship {
 
     @Override
     public String toString() {
-        return String.format("[%s] %s (%s) - %s | Level: %s | Major: %s | Slots: %d | Status: %s | Visible: %s",
-                id, title, company, description, yearType, major, slots, status, visible ? "Yes" : "No");
+        return String.format("[%s] %s (%s) - %s | Level: %s | Major: %s | Open Date : %s | Close Date : %s | Slots: %d | Status: %s | Visible: %s",
+                id, title, company, description, yearType, major,openDate,closeDate, slots, status, visible ? "Yes" : "No");
     }
 
     public String getLevel() {

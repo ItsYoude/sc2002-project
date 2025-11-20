@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import models.*;
 import utility.FileService;
+import utility.FilterManager;
 
 /**
  * Central coordinator — manages login, user session, and data loading/saving.
@@ -18,6 +19,7 @@ public class SystemController {
     private final CSSController careerController;
     private final CompanyRepController repController;
     private StudentController studentController;
+    private final FilterManager filterManager = new FilterManager();
 
     // Constructor
     public SystemController() {
@@ -25,10 +27,10 @@ public class SystemController {
         this.userController = new UserController();
         this.internshipController = new InternshipController();
         this.applicationController = new ApplicationController(null);
-        this.repController = new CompanyRepController();
+        this.repController = new CompanyRepController(filterManager);
         this.careerController = new CSSController(applicationController,repController,internshipController);
         this.studentController = new StudentController(careerController, internshipController, applicationController,
-                null);
+                null,filterManager);
 
     }
 
@@ -96,7 +98,7 @@ public class SystemController {
         List<Internship> internships = FileService.loadInternships();
         internshipController.setInternshipList(internships);
         this.studentController = new StudentController(careerController, internshipController, applicationController,
-                students);
+                students,filterManager);
 
         //Debug print for internships
         System.out.println("============ Validation for Internship Retrieval ============");

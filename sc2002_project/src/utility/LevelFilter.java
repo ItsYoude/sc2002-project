@@ -24,6 +24,8 @@ public class LevelFilter implements InternshipFilter {
     @Override
     public List<Internship> filter(List<Internship> internships) {
         if (level != null) {
+            if (level.equalsIgnoreCase("All"))
+                return internships;
             return internships.stream()
                     .filter(i -> i.getYearType().equalsIgnoreCase(level))
                     .collect(Collectors.toList());
