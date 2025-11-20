@@ -205,8 +205,18 @@ public class CompanyRepUI {
             return;
         }
 
+        if (!(internship.getSlots() > 0))
+        {
+            System.out.println("This internship has no more slots left.");
+            return;
+        }
+
+
         if (applicationController.viewApplicationsForInternship(internship))
         {
+
+
+
             System.out.print("Enter student name to approve/reject (or press Enter to cancel): ");
             String studentName = sc.nextLine().trim();
             if (studentName.isEmpty())
