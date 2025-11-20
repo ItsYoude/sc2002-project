@@ -94,4 +94,6 @@ public class Internship {
     public String getLevel() {
         return yearType;
     }
+
+
 }

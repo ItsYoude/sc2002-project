@@ -45,13 +45,17 @@ public class Student extends User {
         }
     }
 
-    public void withdrawAllExcept(String id)
+    public void withdrawAllExcept(String id) //withdraw all other applications and accept placement. 
     {
         for (AppliedRecord record : appliedInternshipId) 
         {
             if (!record.getInternshipId().equalsIgnoreCase(id))
             {
                 record.setStatus("Withdrawn");
+            }
+            else
+            {
+                record.setStatus("Accepted");
             }
         }
     }

@@ -116,7 +116,7 @@ public class StudentController {
             return false;
         }
 
-        // Accept this placement0
+        // Accept this placement
 
         app.setStatus("Accepted");
         student.acceptInternship(internshipId);
@@ -134,11 +134,11 @@ public class StudentController {
             }
         }
 
-      
+        
         student.withdrawAllExcept(internshipId);
         List<Student> student_list = StudentController.getAllStudents();
         FileService.saveStudents(student_list);
-
+        internshipController.decrementSlotsAfterAcceptance(internshipId);
 
 
         System.out.println(

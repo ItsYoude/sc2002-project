@@ -44,6 +44,6 @@ public class Application {
 
     @Override
     public String toString() {
-        return "Internship ID: " + internship.getId() + " Student: " + student.getName() + ", Internship: " + internship.getTitle() + ", Status: " + this.getStatus();
+        return "Internship ID: " + internship.getId() + " Student: " + student.getName() + ", Internship: " + internship.getTitle() + " at " + internship.getCompany() + ", Status: " + this.getStatus();
     }
 }

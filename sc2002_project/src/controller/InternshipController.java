@@ -176,4 +176,24 @@ public class InternshipController {
                 .collect(Collectors.toList());
     }
 
+
+    public void decrementSlotsAfterAcceptance(String internship_id)
+    {
+        for (Internship it:internships)
+        {
+            if (it.getId().equalsIgnoreCase(internship_id)) {
+                int updated_slot = it.getSlots() - 1;
+                if (!(updated_slot > 0)) {
+                    it.setStatus("Filled");
+                }
+                it.setSlots(updated_slot);
+
+            }
+        }
+        
+        //save the changes to the internship csv
+        FileService.saveInternships(internships);
+    }
+
+
 }

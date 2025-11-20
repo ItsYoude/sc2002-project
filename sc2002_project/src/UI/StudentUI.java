@@ -101,6 +101,11 @@ public class StudentUI {
 
     private void applyInternship() {
 
+        if (student.getAcceptedInternshipId() != null)
+        {
+            System.out.println("You have already accepted an internship and not allowed to apply for more.");
+            return;
+        }
         //show the students what they can apply first
         
         
@@ -176,7 +181,7 @@ public class StudentUI {
 
         boolean success = studentController.acceptOffer(student, id);
         if (!success) {
-            System.out.println("Could not accept the internship. Either it is not a successful application or you have already accepted another internship.");
+            System.out.println("Could not accept the internship. Either it is not a successful application or you already have an accepted internship.");
         }
     }
 

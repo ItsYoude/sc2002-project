@@ -74,70 +74,10 @@ public class ApplicationController {
         System.out.println("Application submitted successfully!");
 
         //save to csv. 
-        //List<Student> student_list = StudentController.getAllStudents();
-        //FileService.saveStudents(student_list);
         List<Student> student_list = StudentController.getAllStudents();
-        // for (Student a:student_list)
-        // {
-        //     System.out.println(a.getName());
-        //     // if (a.getName().equalsIgnoreCase(student.getName()))
-        //     // {
-        //         List<AppliedRecord> b = a.getAppliedInternshipId();
-        //         for (AppliedRecord c:b)
-        //         {
-        //             System.out.println(c.getInternshipId()+c.getStatus());
-        //         }
-        //     // }
-        // }
-
         FileService.saveStudents(student_list);
 
     }
-    /*
-    // Accept a successful internship placement
-    public void acceptPlacement(Student student, String internshipId) {
-        // Check if already accepted another placement
-        for (Application app : applications) {
-            if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId()) &&
-                app.getStatus().equalsIgnoreCase("Accepted")) {
-                System.out.println("You have already accepted another internship placement.");
-                return;
-            }
-        }
-    
-        // Find the target application
-        Application toAccept = null;
-        for (Application app : applications) {
-            if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId()) &&
-                app.getInternship().getId().equalsIgnoreCase(internshipId)) {
-                toAccept = app;
-                break;
-            }
-        }
-    
-        if (toAccept == null) {
-            System.out.println("No matching application found.");
-            return;
-        }
-    
-        if (!toAccept.getStatus().equalsIgnoreCase("Successful")) {
-            System.out.println("Only successful applications can be accepted.");
-            return;
-        }
-    
-        // Accept this placement
-        toAccept.setStatus("Accepted");
-        System.out.println("You have accepted the internship placement: " + toAccept.getInternship().getTitle());
-    
-        // Withdraw all other applications
-        for (Application app : applications) {
-            if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId()) &&
-                !app.getInternship().getId().equalsIgnoreCase(internshipId) &&
-                !app.getStatus().equalsIgnoreCase("Withdrawn")) {
-                app.setStatus("Withdrawn");
-            }
-        }
-    } */
 
     // Withdraw application
     public void withdraw(Student student, String internshipId) {
@@ -172,17 +112,14 @@ public class ApplicationController {
     // View applications for an internship (for company rep)
     public boolean viewApplicationsForInternship(Internship internship) {
         System.out.println("\n--- Applications for " + internship.getTitle() + " ---");
-        //boolean found = false;
+        boolean found = false;
         for (Application app : applications) {
             if (app.getInternship().getId().equalsIgnoreCase(internship.getId())) {
                 System.out.println(app);
-                return true;
+                found =  true;
             }
         }
-        // if (!found) {
-        //     System.out.println("No applications found for this internship.");
-        // }
-        return false;
+        return found;
     }
 
     // Update application status (approve/reject)
