@@ -15,6 +15,7 @@ public class FileService {
     // private static final String CSS_STAFF_DATA_FILE = "src/data/sample_staff_list.csv";
     // private static final String COMPANY_REP_DATA_FILE = "src/data/sample_company_representative_list.csv";
     // private static final String INTERNSHIP_DATA_FILE = "src/data/internship_list.csv";
+    //private static final String WITHDRAW_DATA_FILE = "src/data/withdraw_list.csv";
 
     
     //youde version
@@ -22,12 +23,14 @@ public class FileService {
     private static final String COMPANY_REP_DATA_FILE = "data/sample_company_representative_list.csv";
     private static final String CSS_STAFF_DATA_FILE = "data/sample_staff_list.csv";
     private static final String INTERNSHIP_DATA_FILE = "data/internship_list.csv";
+    private static final String WITHDRAW_DATA_FILE = "data/withdraw_list.csv";
 
     //deonne version
     // private static final String STUDENT_DATA_FILE = "src/data/sample_student_list.csv";
     // private static final String CSS_STAFF_DATA_FILE = "src/data/sample_staff_list.csv";
     // private static final String COMPANY_REP_DATA_FILE = "src/data/sample_company_representative_list.csv";
     // private static final String INTERNSHIP_DATA_FILE = "src/data/internship_list.csv";
+    //private static final String WITHDRAW_DATA_FILE = "src/data/withdraw_list.csv";
    
     // Load students
     public static List<Student> loadStudents() {
@@ -287,27 +290,106 @@ public class FileService {
         }
     }
 
-    public static List<Application> loadApplications(List<Student> students,InternshipController internshipController) {
-    List<Application> applications = new ArrayList<>();
-    for (Student student : students) {
-        for (AppliedRecord record : student.getAppliedInternshipId()) {
-            Internship internship = internshipController.getInternshipById(record.getInternshipId());
-            if (internship != null) {
-                Application a = new Application(student, internship);
-                a.setStatus(record.getStatus());
-                applications.add(a);
+    public static List<Application> loadApplications(List<Student> students,
+            InternshipController internshipController) {
+        List<Application> applications = new ArrayList<>();
+        for (Student student : students) {
+            for (AppliedRecord record : student.getAppliedInternshipId()) {
+                Internship internship = internshipController.getInternshipById(record.getInternshipId());
+                if (internship != null) {
+                    Application a = new Application(student, internship);
+                    a.setStatus(record.getStatus());
+                    applications.add(a);
+                }
             }
         }
-    }
 
         return applications;
     }
 
+
+
+
+    public static void saveWithdrawRequests(List<WithdrawRequest> requests) {
+        File file = new File(WITHDRAW_DATA_FILE);
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
+
+            // Header row
+            pw.println("uid,student_id,internship_id,reason,status");
+
+            // Data rows
+            for (WithdrawRequest req : requests) {
+                pw.println(
+                        req.getId() + "," +
+                                req.getStudent().getUserId() + "," +
+                                req.getInternship().getId() + "," +
+                                req.getReason().replace(",", " ") + "," + // avoid breaking CSV
+                                req.getStatus());
+            }
+
+            pw.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+        
+            public static List<WithdrawRequest> loadWithdrawRequests(List<Student> students, List<Internship> internships) {
+            List<WithdrawRequest> requests = new ArrayList<>();
+            File file = new File(WITHDRAW_DATA_FILE);
+
+            if (!file.exists()) return requests; // return empty if file does not exist
+
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                br.readLine(); // skip header
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    String[] parts = line.split(",", -1);
+                    if (parts.length < 5) continue;
+
+                    String uid = parts[0].trim();
+                    String studentId = parts[1].trim();
+                    String internshipId = parts[2].trim();
+                    String reason = parts[3].trim();
+                    String status = parts[4].trim();
+
+                    // find student object
+                    Student student = students.stream()
+                            .filter(s -> s.getUserId().equalsIgnoreCase(studentId))
+                            .findFirst()
+                            .orElse(null);
+
+                    // find internship object
+                    Internship internship = internships.stream()
+                            .filter(i -> i.getId().equalsIgnoreCase(internshipId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (student != null && internship != null) {
+                        WithdrawRequest req = new WithdrawRequest(student, internship, reason);
+                        req.setStatus(status); // restore status
+                        // overwrite UID if you want to preserve it
+                        try {
+                            java.lang.reflect.Field idField = WithdrawRequest.class.getDeclaredField("id");
+                            idField.setAccessible(true);
+                            idField.set(req, uid);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        requests.add(req);
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return requests;
+        }
+
     
-
-
-
-
-
 
 }

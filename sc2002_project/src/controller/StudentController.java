@@ -84,8 +84,17 @@ public class StudentController {
 
     public void requestWithdrawal(Student student, Internship internship, String reason) {
         WithdrawRequest request = new WithdrawRequest(student, internship, reason);
-        cssController.addWithdrawRequest(request); // <-- Add centrally
-        System.out.println("Withdrawal request submitted for internship " + internship.getTitle());
+        if (!(cssController.checkIfExist(request)))
+        {
+            cssController.addWithdrawRequest(request); // <-- Add centrally
+            System.out.println("Withdrawal request submitted for internship " + internship.getTitle());
+        }
+        else
+        {
+            System.out.println("You already submitted an Withdrawal request for "+ internship.getTitle());
+        }
+
+
     }
 
     /**
@@ -159,9 +168,23 @@ public class StudentController {
      */
     public Student getStudentById(String studentId) {
         return students.stream()
-                       .filter(s -> s.getUserId().equalsIgnoreCase(studentId))
-                       .findFirst()
-                       .orElse(null);
+                .filter(s -> s.getUserId().equalsIgnoreCase(studentId))
+                .findFirst()
+                .orElse(null);
+    }
+    
+    public void getAllWithdrawApplications(Student student)
+    {
+        List<WithdrawRequest> b = cssController.getWithdrawalRequestsForStudent(student);
+        if (!b.isEmpty())
+        {
+            System.out.println("--- List of Withdraw Applications ----");
+            for (WithdrawRequest a : b) {
+                System.out.println(a);
+            }
+            return;
+        }
+        System.out.println("You have not submitted any Withdraw Applications.");
     }
 
     /**

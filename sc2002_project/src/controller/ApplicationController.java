@@ -19,6 +19,11 @@ public class ApplicationController {
         this.applications = appList;
     }
 
+    public List<Application> getApplicationList()
+    {
+        return applications;
+    }
+
     // public ApplicationController()
     // {
 
@@ -51,7 +56,7 @@ public class ApplicationController {
             System.out.println("You have reached the maximum of 3 active applications.");
             return;
         }
-
+        //check if student is eligible for internship based on year and level 
         if (!isEligible(student, internship)) {
             System.out.println("You are not eligible for this internship based on your year and level.");
             return;
@@ -80,19 +85,19 @@ public class ApplicationController {
     }
 
     // Withdraw application
-    public void withdraw(Student student, String internshipId) {
-        Iterator<Application> it = applications.iterator();
-        while (it.hasNext()) {
-            Application app = it.next();
-            if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId())
-                    && app.getInternship().getId().equalsIgnoreCase(internshipId)) {
-                it.remove();
-                System.out.println("Application withdrawn successfully!");
-                return;
-            }
-        }
-        System.out.println("No matching application found to withdraw.");
-    }
+    // public void withdraw(Student student, String internshipId) {
+    //     Iterator<Application> it = applications.iterator();
+    //     while (it.hasNext()) {
+    //         Application app = it.next();
+    //         if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId())
+    //                 && app.getInternship().getId().equalsIgnoreCase(internshipId)) {
+    //             it.remove();
+    //             System.out.println("Application withdrawn successfully!");
+    //             return;
+    //         }
+    //     }
+    //     System.out.println("No matching application found to withdraw.");
+    // }
 
     // View all applications for a student
     public void viewApplications(Student student) {
@@ -161,11 +166,6 @@ public class ApplicationController {
         return result;
     }
 
-
-
-
-    
-
     
     // NEW: For Career Center Staff: view all applications
     public void viewAllApplications() {
@@ -179,7 +179,7 @@ public class ApplicationController {
         }
     }
 
-
+    //retrieve only this student's applications
     public Application getApplication(Student student, Internship internship) {
         // Assuming you have a list of all applications
         return applications.stream()
@@ -189,6 +189,7 @@ public class ApplicationController {
                 .orElse(null); // or throw a custom exception if not found
     }
 
+    //retrieve only pending applications
     public boolean isPending(String student_name, Internship internship) {
         for (Application app : applications) {
             if (app.getInternship().getId().equalsIgnoreCase(internship.getId())) {
@@ -205,6 +206,31 @@ public class ApplicationController {
         }
         //System.out.println("You entered a student that did not apply for this Internship");
         return false;
+    }
+
+
+    public List<Application> getOnlyWithdrawableApplications(Student student)
+    {
+     List<Application> result = new ArrayList<>();
+
+        for (Application app : applications) {
+        if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId())) {
+
+            String status = app.getStatus();
+
+            // Only Pending or Successful or Accepted applications can be withdrawn
+            if (status.equalsIgnoreCase("Pending") ||
+                    status.equalsIgnoreCase("Successful") ||
+                    status.equalsIgnoreCase("Accepted")) 
+                {
+                    result.add(app);
+            //     System.out.println("Reference of internship inside getWithdwaableApplication: " 
+            // + System.identityHashCode(app.getInternship()));
+                }
+        }
+        }
+
+    return result;
     }
 
 }

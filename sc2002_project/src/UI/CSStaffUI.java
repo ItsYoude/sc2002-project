@@ -79,6 +79,7 @@ public class CSStaffUI {
                     if (changedStaff) continueMenu = false;
                     break;
                 case "7":
+                    careerController.viewAllWithdrawlRequests();
                     List<WithdrawRequest> pendingRequests = careerController.getPendingWithdrawalRequests();
 
                     if (pendingRequests.isEmpty()) {

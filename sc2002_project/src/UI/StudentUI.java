@@ -34,6 +34,7 @@ public class StudentUI {
             System.out.println("4. Withdraw Application");
             System.out.println("5. Change Password");
             System.out.println("6. Accept Application");
+            System.out.println("7. View Withdraw Applications");
             System.out.println("0. Logout");
             System.out.print("Select option: ");
 
@@ -60,6 +61,9 @@ public class StudentUI {
                     break;
                 case "6":
                     acceptInternship();
+                    break;
+                case "7":
+                    studentController.getAllWithdrawApplications(student);
                     break;
                 case "0":
                     System.out.println("Logging out and returning to login screen...");
@@ -153,21 +157,74 @@ public class StudentUI {
 
     private void withdrawApplication() {
 
-        //draw from applied/accepted
+        //check if user has any application to withdraw from
+        //only can withdraw application that are pending/successful/accepted
 
-        System.out.print("Enter Internship ID to withdraw: ");
-        String id = sc.nextLine().trim();
-        Internship internship = internshipController.getInternshipById(id);
-
-        if (internship == null) {
-            System.out.println("Invalid internship ID.");
+        List<Application> withdrawable = applicationController.getOnlyWithdrawableApplications(student);
+        if (withdrawable.isEmpty())
+        {
+            System.out.println("No withdrawable applications.");
             return;
         }
 
+        //display the withdrawable applications
+        for (Application a : withdrawable)
+        {
+            System.out.println(a);
+        }
+
+        //draw from applied/accepted
+        System.out.print("Enter Internship ID to withdraw: ");
+        String id = sc.nextLine().trim();
+
+        boolean isValid = withdrawable.stream()
+        .anyMatch(app -> app.getInternship().getId().equalsIgnoreCase(id));
+        //check if this id entered is inside the withdrawble applications
+
+        if (!isValid)
+        {
+            System.out.println("Please only enter withdrawble applications (Pending/Successful/Accepted)");
+            return;
+        }
+
+
+
+        // Internship internship = internshipController.getInternshipById(id);
+
+        // if (internship == null) {
+        //     System.out.println("Invalid internship ID.");
+        //     return;
+        // }
+
         System.out.print("Enter reason for withdrawal: ");
         String reason = sc.nextLine().trim();
+        if (reason.isEmpty())
+        {
+            System.out.println("Reason must be filled in for withdrawal application.");
+            return;
+        }
 
-        studentController.requestWithdrawal(student, internship, reason);
+
+        //extract the internship from withdrawable
+        Internship withdrawing_internship = null;
+        for (Application a : withdrawable)
+        {
+            if (a.getInternship().getId().equalsIgnoreCase(id)) //find the internship based on matched unique id
+            {
+                withdrawing_internship = a.getInternship();
+                //             System.out.println("Reference of internship inside Application: " 
+                // +        System.identityHashCode(a.getInternship()));
+
+                //     System.out.println("Reference of withdrawing_internship: "
+                // + System.identityHashCode(withdrawing_internship));
+            }
+        }
+        
+
+
+
+
+        studentController.requestWithdrawal(student, withdrawing_internship, reason);
     }
 
     private void acceptInternship() {

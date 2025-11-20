@@ -26,7 +26,7 @@ public class SystemController {
         this.internshipController = new InternshipController();
         this.applicationController = new ApplicationController(null);
         this.repController = new CompanyRepController();
-        this.careerController = new CSSController(applicationController,repController);
+        this.careerController = new CSSController(applicationController,repController,internshipController);
         this.studentController = new StudentController(careerController, internshipController, applicationController,
                 null);
 
@@ -110,6 +110,13 @@ public class SystemController {
         // userController.setCompanyReps(reps);
         List<Application> appList = FileService.loadApplications(students, internshipController);
         this.applicationController.setApplicationList(appList);
+
+
+        // populate WithdrawRequest list
+        List<WithdrawRequest> withdraw_list = FileService.loadWithdrawRequests(students, internships);
+        this.careerController.setWithdrawlist(withdraw_list);
+
+
 
     }
 

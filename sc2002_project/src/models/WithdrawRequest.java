@@ -15,6 +15,14 @@ public class WithdrawRequest {
         this.internship = internship;
         this.reason = reason;
         this.status = "Pending";
+
+
+
+
+    //   System.out.println("Reference of internship inside Withdraw Request: " 
+    //         + System.identityHashCode(internship));
+
+
     }
 
     //getters
@@ -29,11 +37,12 @@ public class WithdrawRequest {
     public void reject() { this.status = "Rejected"; }
 
     @Override
-    public String toString() {
-        return "Withdraw Request - Student: " + student.getName()
-                + ", Internship: " + internship.getTitle()
-                + ", Reason: " + reason
-                + ", Status: " + status;
-    }
+    public String toString() {                  
+            return ("Request ID: " + id +
+                            " | Student: " + student.getName()+
+                            " | Internship: " + internship.getTitle() +
+                            " | Reason: " + reason + " | Status: "+status);
+   }
+    
 
 }

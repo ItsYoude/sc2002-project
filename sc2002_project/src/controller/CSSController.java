@@ -11,15 +11,17 @@ public class CSSController {
     private static CSSController instance;
     private final CompanyRepController repController;
     private final ApplicationController applicationController;
-    private final List<WithdrawRequest> withdrawRequests;
+    private final InternshipController internshipController;
+    private List<WithdrawRequest> withdrawRequests;
     private final List<CareerCenterStaff> staffList = new ArrayList<>();
     private final Scanner sc;
 
 
-   public CSSController(ApplicationController applicationController, CompanyRepController repController) {
+   public CSSController(ApplicationController applicationController, CompanyRepController repController,InternshipController internshipController) {
         this.applicationController = applicationController;
         this.repController = repController;
         this.withdrawRequests = new ArrayList<>();
+        this.internshipController = internshipController;
         this.sc = new Scanner(System.in);
         this.staffList.addAll(FileService.loadCSStaff()); // <-- load from CSV
         instance = this;
@@ -28,9 +30,21 @@ public class CSSController {
     public List<CareerCenterStaff> getAllStaff() {
     return staffList;
 }
+
     public static CSSController getInstance() {
         return instance;
     }
+
+    public List<WithdrawRequest> getWithdrawList()
+    {
+        return withdrawRequests;
+    }
+
+    public void setWithdrawlist(List<WithdrawRequest> withdraw_list)
+    {
+        this.withdrawRequests = withdraw_list;
+    }
+    
 
     public void manageCompanyRepresentatives() {
         System.out.println("Managing company representative accounts...");
@@ -99,6 +113,8 @@ public class CSSController {
     public WithdrawRequest getRequestById(String id) {
         for (WithdrawRequest req : withdrawRequests) {
             if (req.getId().equals(id)) {
+                //     System.out.println("Reference of internship inside Withdraw Request: " 
+                //  + System.identityHashCode(req.getInternship()));
                 return req;
             }
         }
@@ -109,9 +125,40 @@ public class CSSController {
             .filter(r -> r.getStatus().equals("Pending"))
             .collect(Collectors.toList());
     }
+
     public void addWithdrawRequest(WithdrawRequest req) {
         withdrawRequests.add(req);
+        //this is a list that is not persistent yet includes id,student,internship,reason,status
+        //add to csv
+        FileService.saveWithdrawRequests(withdrawRequests);
+
     }
+
+    //check if there exist a pending withdrawal request. 
+    public boolean checkIfExist(WithdrawRequest req) {
+        return withdrawRequests.stream()
+                .anyMatch(r -> r.getStudent().getName().equalsIgnoreCase(req.getStudent().getName()) &&
+                        r.getInternship().getId().equalsIgnoreCase(req.getInternship().getId()) &&
+                        r.getStatus().equalsIgnoreCase("Pending"));
+    }
+        
+    public void viewAllWithdrawlRequests()
+    {
+        if (!withdrawRequests.isEmpty()) {
+            System.out.println("\n--- All Withdrawal Requests ---");
+            for (WithdrawRequest wr : withdrawRequests) {
+                System.out.println(wr);
+            }
+        }
+    }
+    
+    public List<WithdrawRequest> getWithdrawalRequestsForStudent(Student student) {
+        return withdrawRequests.stream()
+                .filter(req -> req.getStudent().getUserId().equalsIgnoreCase(student.getUserId()))
+                .collect(Collectors.toList());
+    }
+
+
     public void viewWithdrawalRequests() {
         List<WithdrawRequest> pending = withdrawRequests.stream()
             .filter(r -> r.getStatus().equals("Pending"))
@@ -125,25 +172,81 @@ public class CSSController {
         Internship internship = request.getInternship();
         
         if (approve) {
-            request.setStatus("Approved");
+            request.setStatus("Approved"); 
             Application app = applicationController.getApplication(student, internship);
             if (app != null) {
-                app.setStatus("Withdrawn");
-                System.out.println("Withdrawal request approved.");
-                // Decrease slots if needed (optional)
-                internship.setSlots(internship.getSlots() + 1);
 
-                // Save the updated internships and students
-                //FileService.saveInternships(system.getAllInternships());  // or internshipController.getAllInternships()
+                //change the application status to Withdrawn
+                app.setStatus("Withdrawn");
+
+                //change the appliedInternship status of this internship to Withdrawn for Student
+                List<AppliedRecord> ar = student.getAppliedInternshipId();
+                for (AppliedRecord a : ar) {
+                    if (a.getInternshipId().equalsIgnoreCase(request.getInternship().getId())) {
+                        a.setStatus("Withdrawn");
+                    }
+                }
+
+                if (student.getAcceptedInternshipId() != null)
+                {
+                    //check if the acceptedInternship is this internship, if it is, remove. 
+                    if (student.getAcceptedInternshipId().equalsIgnoreCase(request.getInternship().getId())) {
+                        //System.out.println("This is accepeted ! "+student.getAcceptedInternshipId());
+                        student.setAcceptedInternshipId(null);
+                        //increase internship slots because accepted has withdrawn got more slots now.
+                        internship.setSlots(internship.getSlots() + 1);
+
+                    }
+                }
+
+                //remove this withdrawing request
+                //withdrawRequests.removeIf(r -> r.getId().equals(request.getId()));
+
+                List<Student> list = StudentController.getAllStudents();
+
+                for (int i = 0; i < list.size(); i++) {
+                    Student s = list.get(i);
+                    if (s.getUserId().equalsIgnoreCase(student.getUserId())) {
+                        list.set(i, student);
+                        break;
+                    }
+                }
+
+                List<Internship> internships = internshipController.getAllInternships();
+                for (int i = 0; i < internships.size(); i++) {
+                    if (internships.get(i).getId().equalsIgnoreCase(internship.getId())) {
+                        internships.set(i, internship);
+                        break;
+                    }
+                }
+
+                
+                
+                //update student, application, withdraw, internship records into csv
+                FileService.saveStudents(StudentController.getAllStudents());
+                FileService.saveWithdrawRequests(withdrawRequests);
+                FileService.saveInternships(internshipController.getAllInternships());
+        
+
+                System.out.println("Withdrawal request approved.");
             } else {
                 System.out.println("Application not found for student " 
                                 + student.getName() + " and internship " 
-                                + internship.getTitle());
+                        + internship.getTitle());
+     
             }
         } else {
+            //set request to reject and save to the csv
             request.setStatus("Rejected");
+            FileService.saveWithdrawRequests(withdrawRequests);
             System.out.println("Withdrawal request rejected.");
+
         }
+
+
+
+
+
     }
 
     public void handleInternshipApproval(Internship internship, boolean approve, InternshipController internshipController) {
