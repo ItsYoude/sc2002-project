@@ -92,7 +92,12 @@ public class LoginUI {
 }
         // Outside the CompanyRep check
     System.out.println("Welcome " + loggedInUser.getName() + " (" + loggedInUser.getUserType() + ")");
-    redirectToDashboard(loggedInUser);
+    boolean loggedOut = redirectToDashboard(loggedInUser);
+    if (loggedOut) {
+    // User logged out → return to START PAGE
+        return;
+    }
+
 }
 }
 
@@ -165,15 +170,15 @@ public class LoginUI {
     }
 
 
-    private void redirectToDashboard(User user) {
+    private boolean redirectToDashboard(User user) {
         switch (user.getUserType()) {
             case "Student": {
                 new StudentUI((Student) user, internshipController, applicationController, studentController).showMenu();
-                break; // <--- important
+                return true; // <--- important
             }
             case "Company Representative": {
                 new CompanyRepUI((CompanyRepresentative) user, internshipController,applicationController,companyRepController).showMenu();
-                break; // <--- important
+                return true; // <--- important
             }
             case "Career Center Staff": {
                 new CSStaffUI((CareerCenterStaff) user,
@@ -183,11 +188,11 @@ public class LoginUI {
                         careerController,
                         companyRepController)
                         .showMenu();
-                break; // <--- important
+                return true; // <--- important
             }
             default:
                 System.out.println("Unknown user type!");
-                break;
+                return false;
         }
     }
 
