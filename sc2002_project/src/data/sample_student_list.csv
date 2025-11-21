@@ -1,5 +1,5 @@
 StudentID,Name,Major,Year,Email,AppliedInternships,AcceptedInternship,Password
-U2310001A,Tan Wei Ling,CS,2,tan001@e.ntu.edu.sg,I2:Withdrawn;I3:Withdrawn;I4:Withdrawn,,flower123
+U2310001A,Tan Wei Ling,CS,2,tan001@e.ntu.edu.sg,,,flower123
 U2310002B,Ng Jia Hao,DSAI,3,ng002@e.ntu.edu.sg,,,password
 U2310003C,Lim Yi Xuan,CE,4,lim003@e.ntu.edu.sg,,,password
 U2310004D,Chong Zhi Hao,IEM,1,chong004@e.ntu.edu.sg,,,password

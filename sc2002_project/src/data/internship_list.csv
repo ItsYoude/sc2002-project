@@ -1,6 +1,1 @@
 id,title,company,representativeId,major,yearType,description,openDate,closeDate,slots,visible,status
-I1,Software Engineer,Wang Tech,jw12@gmail.com,CS,Intermediate,code,2025-11-22,2026-01-01,10,true,Approved
-I2,Lab assistant,Wang Tech,jw12@gmail.com,CS,basic,prepare lab,2025-11-22,2026-01-01,4,true,Approved
-I3,Technician,Wang Tech,jw12@gmail.com,CS,basic,manage data center,2025-11-22,2026-01-01,3,false,Approved
-I4,Undystudy,Wang Tech,jw12@gmail.com,CS,basic,learn from lecturer,2025-11-22,2026-01-01,1,true,Approved
-I5,Idiot,Wang Tech,jw12@gmail.com,CS,basic,breadboard,2025-11-19,2025-11-21,2,false,Rejected
