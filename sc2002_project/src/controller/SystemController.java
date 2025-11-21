@@ -87,12 +87,12 @@ public class SystemController {
         users.addAll(reps);
 
         //test if all accounts are retrived from excel
-        System.out.println("============Validation for Account Retrieval==========");
-        for (User u : users) {
-            System.out.println(u.getUserType() + " " + u.getUserId() + " " + u.getName() + " " + u.getPassword());
-        }
-        System.out.println("Accounts in total = " + users.size());
-        System.out.println("============End==========");
+        // System.out.println("============Validation for Account Retrieval==========");
+        // for (User u : users) {
+        //     System.out.println(u.getUserType() + " " + u.getUserId() + " " + u.getName() + " " + u.getPassword());
+        // }
+        // System.out.println("Accounts in total = " + users.size());
+        // System.out.println("============End==========");
 
         //load internship
         List<Internship> internships = FileService.loadInternships();
@@ -101,12 +101,12 @@ public class SystemController {
                 students,filterManager);
 
         //Debug print for internships
-        System.out.println("============ Validation for Internship Retrieval ============");
-        for (Internship i : internships) {
-            System.out.println(i.toString());
-        }
-        System.out.println("Internships in total = " + internships.size());
-        System.out.println("============ End ===========");
+        // System.out.println("============ Validation for Internship Retrieval ============");
+        // for (Internship i : internships) {
+        //     System.out.println(i.toString());
+        // }
+        // System.out.println("Internships in total = " + internships.size());
+        // System.out.println("============ End ===========");
 
         // Pass company reps to userController
         // userController.setCompanyReps(reps);

@@ -60,7 +60,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         List<CompanyRepresentative> repsFromFile = FileService.loadCompanyReps();
         for (CompanyRepresentative rep : repsFromFile) {
             // System.out.println(rep.getStatus());
-            System.out.println(rep.getName() + rep.isApproved());
+            //System.out.println(rep.getName() + rep.isApproved());
             companyReps.add(rep); // <--- track all reps
             String status = rep.getStatus() == null ? "" : rep.getStatus().trim(); //null-safe default
             switch (status) {
