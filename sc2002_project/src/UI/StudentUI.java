@@ -101,7 +101,7 @@ public class StudentUI {
         } else {
             // Print the clean, filtered, and sorted list retrieved from the controller
             for (Internship opp : opportunities) {
-                System.out.println(opp);
+                System.out.println(opp.view_student());
             }
         }
 
@@ -135,20 +135,20 @@ public class StudentUI {
     if (choice.equalsIgnoreCase("y")) {
         UserFilterSettings settings = new UserFilterSettings();
 
-        System.out.print("Filter by Status (Approved/Pending/All): ");
-        String status = sc.nextLine().trim();
-        if (status.isEmpty())
-        {
-            System.out.println("Do not leave blank.");
-            return;
-        }
-            if (!status.equalsIgnoreCase("Approved") &&
-            !status.equalsIgnoreCase("Pending") &&
-                !status.equalsIgnoreCase("All")) {
-            System.out.println("Invalid status filter.");
-            return;
-        }
-         settings.setStatus(status);
+        // System.out.print("Filter by Status (Approved/Pending/All): ");
+        // String status = sc.nextLine().trim();
+        // if (status.isEmpty())
+        // {
+        //     System.out.println("Do not leave blank.");
+        //     return;
+        // }
+        //     if (!status.equalsIgnoreCase("Approved") &&
+        //     !status.equalsIgnoreCase("Pending") &&
+        //         !status.equalsIgnoreCase("All")) {
+        //     System.out.println("Invalid status filter.");
+        //     return;
+        // }
+        settings.setStatus("Approved");
         
 
 
@@ -194,7 +194,7 @@ public class StudentUI {
     } else {
         System.out.println("--- Filtered Internships ---");
         for (Internship i : filtered) {
-            System.out.println(i);
+            System.out.println(i.view_student());
         }
     }
 
@@ -213,6 +213,15 @@ public class StudentUI {
             System.out.println("You have already accepted an internship and not allowed to apply for more.");
             return;
         }
+
+
+        if (student.getAppliedInternshipId().size() >= 3) //temp fix 
+        {
+            System.out.println("You have applied for 3 internships.");
+            return;
+        }
+
+
         //show the students what they can apply first
         
         

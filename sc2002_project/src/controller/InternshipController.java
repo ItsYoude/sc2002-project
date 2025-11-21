@@ -63,15 +63,6 @@ public class InternshipController {
         return true;
     }
 
-    // public List<Internship> getEligibleInternships(Student student, IInternshipSorter sorter) {
-    //     // 1. Filter: Use the injected IEligibilityFilter abstraction (DIP)
-    //     List<Internship> eligibleList = eligibilityFilter.filterEligible(this.internships, student);
-    //     // 2. Sort: Use the provided sorter abstraction (DIP)
-    //     return sorter.sort(eligibleList);
-    // }
-
-    //using pipeline
-
 
     // Build a fresh pipeline for each method call
     private FilterPipeline buildPipelineForStudent(Student student) {

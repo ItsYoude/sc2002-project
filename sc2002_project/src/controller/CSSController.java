@@ -205,7 +205,7 @@ public class CSSController {
                         student.setAcceptedInternshipId(null);
                         //increase internship slots because accepted has withdrawn got more slots now.
                         internship.setSlots(internship.getSlots() + 1);
-
+                        internship.setStatus("Approved");
                     }
                 }
 

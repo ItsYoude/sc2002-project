@@ -290,7 +290,7 @@ public class CSStaffUI {
     if (choice.equalsIgnoreCase("y")) {
         UserFilterSettings settings = new UserFilterSettings();
 
-        System.out.print("Filter by Status (Approved/Pending/All): ");
+        System.out.print("Filter by Status (Approved/Pending/Rejected/Filled/All): ");
         String status = sc.nextLine().trim();
         if (status.isEmpty())
         {
@@ -299,6 +299,8 @@ public class CSStaffUI {
         }
             if (!status.equalsIgnoreCase("Approved") &&
             !status.equalsIgnoreCase("Pending") &&
+                !status.equalsIgnoreCase("Rejected")&&
+                !status.equalsIgnoreCase("Filled")&&
                 !status.equalsIgnoreCase("All")) {
             System.out.println("Invalid status filter.");
             return;

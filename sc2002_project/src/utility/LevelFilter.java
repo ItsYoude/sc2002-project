@@ -30,13 +30,35 @@ public class LevelFilter implements InternshipFilter {
                     .filter(i -> i.getYearType().equalsIgnoreCase(level))
                     .collect(Collectors.toList());
         }
+        // return internships.stream()
+        //         .filter(i -> {
+        //             if (studentYear >= 3)
+        //                 return !i.getYearType().equalsIgnoreCase("Basic"); // can see Intermediate + Advanced
+        //             return i.getYearType().equalsIgnoreCase("Basic");
+        //         })
+        //         .collect(Collectors.toList());
+        
+
+        
+        //return all 
+        if (studentYear == 3 || studentYear == 4)
+        {
+            return internships;
+        }
+        //for year < 3 return basic only 
         return internships.stream()
-                .filter(i -> {
-                    if (studentYear >= 3)
-                        return !i.getYearType().equalsIgnoreCase("Basic"); // can see Intermediate + Advanced
-                    return i.getYearType().equalsIgnoreCase("Basic");
-                })
-                .collect(Collectors.toList());
+        .filter(i -> {
+            if (studentYear == 1 || studentYear == 2) {
+                // Only BASIC allowed
+                return i.getYearType().equalsIgnoreCase("Basic");
+                    } else if (studentYear == 3 || studentYear == 4) {
+                // // Intermediate + Advanced allowed
+                // return i.getYearType().equalsIgnoreCase("Intermediate")
+                //     || i.getYearType().equalsIgnoreCase("Advanced");
+            }
+            return false; // in case of invalid year
+        })
+        .collect(Collectors.toList());
     }
 }
 
