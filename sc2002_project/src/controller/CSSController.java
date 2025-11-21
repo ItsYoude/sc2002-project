@@ -1,11 +1,19 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import models.*;
+import utility.ClosingDateFilter;
 import utility.FileService;
+import utility.FilterManager;
+import utility.FilterPipeline;
+import utility.LevelFilter;
+import utility.MajorFilter;
+import utility.StatusFilter;
+import utility.UserFilterSettings;
 
 public class CSSController {
     private static CSSController instance;
@@ -15,15 +23,17 @@ public class CSSController {
     private List<WithdrawRequest> withdrawRequests;
     private final List<CareerCenterStaff> staffList = new ArrayList<>();
     private final Scanner sc;
+    private final FilterManager filterManager; 
 
 
-   public CSSController(ApplicationController applicationController, CompanyRepController repController,InternshipController internshipController) {
+   public CSSController(ApplicationController applicationController, CompanyRepController repController,InternshipController internshipController,FilterManager filterManager) {
         this.applicationController = applicationController;
         this.repController = repController;
         this.withdrawRequests = new ArrayList<>();
         this.internshipController = internshipController;
         this.sc = new Scanner(System.in);
         this.staffList.addAll(FileService.loadCSStaff()); // <-- load from CSV
+        this.filterManager = filterManager;
         instance = this;
     }
     
@@ -249,7 +259,8 @@ public class CSSController {
 
     }
 
-    public void handleInternshipApproval(Internship internship, boolean approve, InternshipController internshipController) {
+    public void handleInternshipApproval(Internship internship, boolean approve,
+            InternshipController internshipController) {
         if (internship == null || !internship.getStatus().equalsIgnoreCase("Pending")) {
             System.out.println("Error: Internship is not found or is not pending approval.");
             return;
@@ -264,4 +275,46 @@ public class CSSController {
         // Save the changes to the persistence layer
         internshipController.saveAllInternships();
     }
+    
+
+
+    public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
+        UserFilterSettings settings = filterManager.getFilters(userId);
+
+        FilterPipeline pipeline = new FilterPipeline();
+
+        if (settings != null) {
+            pipeline.add(new StatusFilter(settings.getStatus()));
+            pipeline.add(new LevelFilter(settings.getLevel()));
+            pipeline.add(new MajorFilter(settings.getMajor()));
+            pipeline.add(new ClosingDateFilter(settings.getClosingBefore()));
+            // add other filters as needed
+        }
+
+        // Always add default sorting (alphabetical)
+        pipeline.add(internships -> {
+            internships.sort(Comparator.comparing(Internship::getTitle, String.CASE_INSENSITIVE_ORDER));
+            return internships;
+        });
+
+        return pipeline.filter(all);
+
+    }
+    
+    public void saveUserFilterSettings(CareerCenterStaff staff, UserFilterSettings settings) {
+        filterManager.setFilters(staff.getUserId(), settings);
+    }
+
+    public UserFilterSettings getPreviousFilter(String userId)
+    {
+        return filterManager.getFilters(userId);
+
+    }
+
+
+
+
+
+
+
 }

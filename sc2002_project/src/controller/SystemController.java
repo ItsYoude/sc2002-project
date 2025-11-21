@@ -28,7 +28,7 @@ public class SystemController {
         this.internshipController = new InternshipController();
         this.applicationController = new ApplicationController(null);
         this.repController = new CompanyRepController(filterManager);
-        this.careerController = new CSSController(applicationController,repController,internshipController);
+        this.careerController = new CSSController(applicationController,repController,internshipController,filterManager);
         this.studentController = new StudentController(careerController, internshipController, applicationController,
                 null,filterManager);
 

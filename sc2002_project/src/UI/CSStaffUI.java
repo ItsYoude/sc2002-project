@@ -5,6 +5,8 @@ import controller.CSSController;
 import controller.CompanyRepController;
 import controller.InternshipController;
 import controller.UserController;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,6 +18,7 @@ import utility.LevelFilter;
 import utility.LevelType;
 import utility.MajorFilter;
 import utility.StatusFilter;
+import utility.UserFilterSettings;
 import utility.VisibilityFilter;
 
 
@@ -60,7 +63,8 @@ public class CSStaffUI {
 
             switch (choice) {
                 case "1":
-                    internshipController.viewAllInternships();
+                    //internshipController.viewAllInternships();
+                    viewFilteredInternships();
                     break;
                 case "2":
                     applicationController.viewAllApplications();
@@ -219,7 +223,7 @@ public class CSStaffUI {
     private void manageInternshipApprovals() {
 
         List<Internship> pendingOpportunities = internshipController.getPendingInternships();
-        
+
         if (pendingOpportunities.isEmpty()) {
             System.out.println("No internship opportunities are currently pending approval.");
             return;
@@ -228,10 +232,10 @@ public class CSStaffUI {
         System.out.println("\n--- Pending Internship Opportunities ---");
         for (int i = 0; i < pendingOpportunities.size(); i++) {
             Internship opp = pendingOpportunities.get(i);
-            System.out.println("ID: [" + opp.getId() + "] " + opp.getTitle() + 
-                            " | Company: " + opp.getCompany() + 
-                            " | Level: " + opp.getLevel() +
-                            " | Status: " + opp.getStatus());
+            System.out.println("ID: [" + opp.getId() + "] " + opp.getTitle() +
+                    " | Company: " + opp.getCompany() +
+                    " | Level: " + opp.getLevel() +
+                    " | Status: " + opp.getStatus());
         }
 
         System.out.print("\nEnter the Internship ID to handle (or type 0 to cancel): ");
@@ -241,7 +245,7 @@ public class CSStaffUI {
             System.out.println("Approval cancelled.");
             return;
         }
-        
+
         Internship selectedInternship = internshipController.getInternshipById(id);
 
         if (selectedInternship == null || !selectedInternship.getStatus().equalsIgnoreCase("Pending")) {
@@ -260,4 +264,99 @@ public class CSStaffUI {
             System.out.println("Invalid input. Please enter 'A' for Approve or 'R' for Reject.");
         }
     }
+    
+
+    public void viewFilteredInternships()
+    {
+        System.out.println("Fetching and sorting internships for your profile...");
+        UserFilterSettings previous = careerController.getPreviousFilter(staff.getUserId());
+
+            if (previous != null) {
+                System.out.println("\nYour previous filter settings:");
+                System.out.println("Status: " + previous.getStatus());
+                System.out.println("Major: " + previous.getMajor());
+                System.out.println("Level: " + previous.getLevel());
+                System.out.println("Closing Before: " + 
+                    (previous.getClosingBefore() == null ? "None" : previous.getClosingBefore()));
+            } else {
+                System.out.println("\nYou have no saved filters.");
+            }
+
+
+    
+    // Optionally ask the student to set filters
+    System.out.println("Do you want to set filters? (y/n): ");
+    String choice = sc.nextLine().trim();
+    if (choice.equalsIgnoreCase("y")) {
+        UserFilterSettings settings = new UserFilterSettings();
+
+        System.out.print("Filter by Status (Approved/Pending/All): ");
+        String status = sc.nextLine().trim();
+        if (status.isEmpty())
+        {
+            System.out.println("Do not leave blank.");
+            return;
+        }
+            if (!status.equalsIgnoreCase("Approved") &&
+            !status.equalsIgnoreCase("Pending") &&
+                !status.equalsIgnoreCase("All")) {
+            System.out.println("Invalid status filter.");
+            return;
+        }
+         settings.setStatus(status);
+        
+
+
+        System.out.print("Filter by Major (or leave blank for all): ");
+        String major = sc.nextLine().trim();
+        settings.setMajor(major.isEmpty() ? "All" : major);
+
+        System.out.print("Filter by Level (Basic/Intermediate/Advanced/All): ");
+        String level = sc.nextLine().trim();
+        //settings.setLevel(level.isEmpty() ? "All" : level);
+        if (level.isEmpty())
+        {
+            System.out.println("Do not leave blank");
+            return;
+        }
+        if ((!level.equalsIgnoreCase("Basic") &&
+            !level.equalsIgnoreCase("Intermediate") &&
+                !level.equalsIgnoreCase("Advanced") 
+                && !level.equalsIgnoreCase("All"))) {
+
+            System.out.println("Invalid level filter.");
+            return;
+        }
+        settings.setLevel(level);
+
+        
+
+        System.out.print("Filter by Closing Date (yyyy-MM-dd) or leave blank for no date filter: ");
+        String dateStr = sc.nextLine().trim();
+        if (!dateStr.isEmpty()) {
+            settings.setClosingBefore(LocalDate.parse(dateStr));
+        }
+
+        // Save filter in memory for this student
+        careerController.saveUserFilterSettings(staff, settings);
+    }
+
+    // Retrieve filtered and sorted internships
+    //List<Internship> test = internshipController.getAllInternships();
+    List<Internship> filtered = careerController.getFilteredInternships(staff.getUserId(),internshipController.getAllInternships());
+    if (filtered.isEmpty()) {
+        System.out.println("No internships match your filters.");
+    } else {
+        System.out.println("--- Filtered Internships ---");
+        for (Internship i : filtered) {
+            System.out.println(i);
+        }
+    }
+
+    }
+    
+
+
+
+
 }

@@ -111,7 +111,22 @@ public class StudentUI {
     private void viewUserFilteredInternships()
     {
            
-    System.out.println("Fetching and sorting internships for your profile...");
+        System.out.println("Fetching and sorting internships for your profile...");
+
+    
+        UserFilterSettings previous = studentController.getPreviousFilter(student.getUserId());
+
+            if (previous != null) {
+                System.out.println("\nYour previous filter settings:");
+                System.out.println("Status: " + previous.getStatus());
+                System.out.println("Major: " + previous.getMajor());
+                System.out.println("Level: " + previous.getLevel());
+                System.out.println("Closing Before: " + 
+                    (previous.getClosingBefore() == null ? "None" : previous.getClosingBefore()));
+            } else {
+                System.out.println("\nYou have no saved filters.");
+            }
+
 
     
     // Optionally ask the student to set filters
@@ -172,8 +187,8 @@ public class StudentUI {
     }
 
     // Retrieve filtered and sorted internships
-    List<Internship> test = internshipController.getAllInternships();
-    List<Internship> filtered = studentController.getFilteredInternships(student.getUserId(),test);
+    //List<Internship> test = internshipController.getAllInternships();
+    List<Internship> filtered = studentController.getFilteredInternships(student.getUserId(),internshipController.getAllInternships());
     if (filtered.isEmpty()) {
         System.out.println("No internships match your filters.");
     } else {
@@ -226,13 +241,6 @@ public class StudentUI {
             }
 
             Internship internship = internshipController.getInternshipById(id);
-            // if (internship != null &&
-            //         internship.isVisible() &&
-            //         internship.getStatus().equalsIgnoreCase("Approved")) {
-            //     applicationController.apply(student, internship);
-            // } else {
-            //     System.out.println("Invalid ID or internship not visible.");
-            // }
             applicationController.apply(student, internship);
         } 
         else
@@ -306,12 +314,7 @@ public class StudentUI {
                 //     System.out.println("Reference of withdrawing_internship: "
                 // + System.identityHashCode(withdrawing_internship));
             }
-        }
-        
-
-
-
-
+        }     
         studentController.requestWithdrawal(student, withdrawing_internship, reason);
     }
 

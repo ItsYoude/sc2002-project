@@ -236,6 +236,12 @@ public class StudentController {
         filterManager.setFilters(student.getUserId(), settings);
     }
 
+    public UserFilterSettings getPreviousFilter(String userId)
+    {
+        return filterManager.getFilters(userId);
+
+    }
+
 
 
 

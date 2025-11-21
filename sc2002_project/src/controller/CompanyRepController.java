@@ -256,6 +256,14 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         filterManager.setFilters(companyRepresentative.getUserId(), settings);
     }
 
+    public UserFilterSettings getPreviousFilter(String userId)
+    {
+        return filterManager.getFilters(userId);
+
+    }
+
+
+
 
 
 
