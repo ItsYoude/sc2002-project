@@ -97,4 +97,4 @@ This submission includes the following files/folders:
 * **`src/` folder:** Contains all implementation source code (`.java` files)
 * **`doc/` folder:** Contains the Java API HTML documentation generated using **Javadoc**
 * **`data/` folder:** Contains the CSV files used for initialization (`sample_student_list.csv`, `internship_list.csv`, etc.) 
-* **GitHub Repository Link:** [Insert your GitHub URL here]
+* **GitHub Repository Link:**  [https://github.com/ItsYoude/sc2002-project]
