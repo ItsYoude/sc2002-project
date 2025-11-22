@@ -12,7 +12,7 @@ import utility.MajorFilter;
 import utility.StatusFilter;
 import utility.UserFilterSettings;
 import utility.VisibilityFilter;
-/*
+/**
 manage actions Student can perform
     - View available internships
     - Apply for internships
@@ -27,13 +27,23 @@ Coordinate between:
     - FileService (for saving changes)
 */
 public class StudentController {
+    /** Singleton instance. */
     private static StudentController instance;
+    /** Controllers used by StudentController. */
     private final CSSController cssController;
     private final InternshipController internshipController;
     private final ApplicationController applicationController;
-    private static List<Student> students; // all students loaded from CSV
-    private final FilterManager filterManager; 
 
+    /** List of all students. */
+    private static List<Student> students; // all students loaded from CSV
+
+    /** Filter manager for student internship filters. */
+    private final FilterManager filterManager;
+
+    
+    /**
+     * Constructor initializes StudentController and sets singleton instance.
+     */
     public StudentController(CSSController cssController, InternshipController internshipController,
                              ApplicationController applicationController,
                              List<Student> students,FilterManager filterManager) {
@@ -52,17 +62,19 @@ public class StudentController {
         List<Internship> all = internshipController.getAllInternships();
 
         return all.stream()
-                  .filter(Internship::isVisible)
-                  .filter(i -> i.getMajor().equalsIgnoreCase(student.getMajor()))
-                  .filter(i -> student.isLevelAllowed(i.getYearType()))
-                  .collect(Collectors.toList());
+                .filter(Internship::isVisible)
+                .filter(i -> i.getMajor().equalsIgnoreCase(student.getMajor()))
+                .filter(i -> student.isLevelAllowed(i.getYearType()))
+                .collect(Collectors.toList());
     }
+    
+
+    /** Returns the singleton instance. */
     public static StudentController getInstance() {
         return instance;
     }
-    /**
-     * Apply for an internship
-     */
+
+    /** Apply for an internship for a student. */
     public boolean applyForInternship(Student student, String internshipId) {
         Internship internship = internshipController.getInternshipById(internshipId);
 
@@ -92,6 +104,8 @@ public class StudentController {
         return true;
     }
 
+
+    /** Request withdrawal from an internship. */
     public void requestWithdrawal(Student student, Internship internship, String reason) {
         WithdrawRequest request = new WithdrawRequest(student, internship, reason);
         if (!(cssController.checkIfExist(request)))
@@ -166,23 +180,23 @@ public class StudentController {
         return true;
     }
 
-    /**
-     * View all applications made by the student
-     */
+    /** View all applications made by the student. */
+
     public void viewMyApplications(Student student) {
         applicationController.viewApplications(student);
     }
 
-    /**
-     * Find a student by ID
-     */
+    /** Find a student by their ID. */
+
     public Student getStudentById(String studentId) {
         return students.stream()
                 .filter(s -> s.getUserId().equalsIgnoreCase(studentId))
                 .findFirst()
                 .orElse(null);
     }
-    
+
+    /** View all withdrawal requests submitted by the student. */
+
     public void getAllWithdrawApplications(Student student)
     {
         List<WithdrawRequest> b = cssController.getWithdrawalRequestsForStudent(student);
@@ -197,16 +211,13 @@ public class StudentController {
         System.out.println("You have not submitted any Withdraw Applications.");
     }
 
-    /**
-     * Get all students (useful for saving or listing)
-     */
+    /** Returns the list of all students. */
     public static List<Student> getAllStudents() {
         return students;
     }
 
 
-
-
+    /** Returns filtered internships based on saved user filter settings. */
     public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
         UserFilterSettings settings = filterManager.getFilters(userId);
 
@@ -232,10 +243,14 @@ public class StudentController {
 
     }
     
+
+    /** Save filter settings for a student. */
     public void saveUserFilterSettings(Student student, UserFilterSettings settings) {
         filterManager.setFilters(student.getUserId(), settings);
     }
 
+    
+    /** Retrieve previous filter settings for a student. */
     public UserFilterSettings getPreviousFilter(String userId)
     {
         return filterManager.getFilters(userId);

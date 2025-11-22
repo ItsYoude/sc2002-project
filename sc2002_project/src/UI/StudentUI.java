@@ -1,7 +1,6 @@
 package UI;
 
 import controller.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -9,6 +8,25 @@ import models.*;
 import utility.IInternshipSorter;
 import utility.TitleSorter;
 import utility.UserFilterSettings;
+
+
+/**
+ * Provides a console-based interface for Student users in the Internship Placement Management System.
+ * 
+ * <p>
+ * Responsibilities include:
+ * <ul>
+ *     <li>Viewing eligible internship opportunities</li>
+ *     <li>Viewing and managing applications</li>
+ *     <li>Applying for internships</li>
+ *     <li>Withdrawing applications</li>
+ *     <li>Accepting internship offers</li>
+ *     <li>Setting and viewing filtered internships</li>
+ *     <li>Changing student password</li>
+ * </ul>
+ * </p>
+ */
+
 
 public class StudentUI {
     private final Student student;
@@ -18,7 +36,17 @@ public class StudentUI {
     private final StudentController studentController;
     private final Scanner sc;
 
-    public StudentUI(Student student, InternshipController internshipController, ApplicationController applicationController, StudentController studentController) {
+    
+    /**
+     * Constructs a StudentUI with required controllers and student information.
+     *
+     * @param student               the logged-in Student
+     * @param internshipController  controller handling internship operations
+     * @param applicationController controller handling student applications
+     * @param studentController     controller handling student-specific actions
+     */
+    public StudentUI(Student student, InternshipController internshipController,
+            ApplicationController applicationController, StudentController studentController) {
         this.student = student;
         this.internshipController = internshipController;
         this.applicationController = applicationController;
@@ -26,6 +54,11 @@ public class StudentUI {
         this.sc = new Scanner(System.in);
     }
 
+    
+    /**
+     * Displays the main menu for students and handles user interaction.
+     * Loops until the student logs out or changes password.
+     */
     public void showMenu() {
         boolean continueMenu = true;
 
@@ -82,6 +115,10 @@ public class StudentUI {
         }
     }
 
+        /**
+     * Displays internship opportunities filtered by eligibility and sorted (default by title).
+     * Uses the TitleSorter as default sorting strategy.
+     */
     private void viewInternships() {
         System.out.println("Fetching and sorting internships for your profile...");
         // --- DIP IN ACTION: UI chooses the concrete sorting implementation ---
@@ -93,7 +130,7 @@ public class StudentUI {
             sorter // Passes the abstraction
         );
         // 2. UI handles presentation (Printing to console)
-        System.out.println("\n--- Internship Opportunities for " + student.getMajor() + " ---");
+        System.out.println("\n--- Internship Opportunities for " + "Year " + student.getYearOfStudy() + " " +student.getMajor() + " ---");
         System.out.println("(Filtered by eligibility, visible status, and sorted by Title)");
 
         if (opportunities.isEmpty()) {
@@ -107,7 +144,10 @@ public class StudentUI {
 
     }
     
-
+    /**
+     * Allows students to view internships filtered by saved or new user-defined filters.
+     * Users can set new filters such as status, major, level, or closing date.
+     */
     private void viewUserFilteredInternships()
     {
            
@@ -201,11 +241,17 @@ public class StudentUI {
     }
 
 
-
+    /**
+     * Displays all applications submitted by the student.
+     */
     private void viewMyApplications() {
         applicationController.viewApplications(student);
     }
 
+        /**
+     * Allows students to apply for internships, ensuring eligibility and limits
+     * (e.g., cannot apply after accepting an internship or exceeding max applications).
+     */
     private void applyInternship() {
 
         if (student.getAcceptedInternshipId() != null)
@@ -259,7 +305,10 @@ public class StudentUI {
        
         
     }
-
+    /**
+     * Allows students to withdraw applications that are withdrawable (Pending, Successful, Accepted).
+     * Requires the student to provide a reason for withdrawal.
+     */
     private void withdrawApplication() {
 
         //check if user has any application to withdraw from
@@ -326,7 +375,10 @@ public class StudentUI {
         }     
         studentController.requestWithdrawal(student, withdrawing_internship, reason);
     }
-
+   /**
+     * Allows a student to accept an internship offer.
+     * Checks if the application was successful and if the student has not already accepted another internship.
+     */
     private void acceptInternship() {
         System.out.print("Enter Internship ID to accept: ");
         String id = sc.nextLine().trim();

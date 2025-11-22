@@ -5,6 +5,10 @@ import controller.SystemController;
 import java.util.Scanner;
 
 
+/**
+ * Represents a Company Representative user.
+ * Can manage internships and be approved/rejected by Career Center Staff.
+ */
 
 public class CompanyRepresentative extends User {
     private String companyName;
@@ -16,34 +20,61 @@ public class CompanyRepresentative extends User {
     //private boolean approved = false;
     private boolean max_created;
 
-    public CompanyRepresentative(String userId, String name, String companyName, String department, String position, String email,String status, String password) {
-        super(userId, name, email, password); 
+    /**
+     * Constructor to create a Company Representative.
+     *
+     * @param userId      Unique user ID
+     * @param name        Representative's name
+     * @param companyName Name of the company
+     * @param department  Department within the company
+     * @param position    Position held
+     * @param email       Representative's email
+     * @param status      Current approval status (Pending/Approved/Rejected)
+     * @param password    Login password
+     */
+    public CompanyRepresentative(String userId, String name, String companyName, String department, String position,
+            String email, String status, String password) {
+        super(userId, name, email, password);
         this.companyName = companyName;
         this.department = department;
         this.position = position;
         this.status = status;
     }
 
-    public String getCompanyName(){
-        return companyName;
-    }
-    public String getDepartment(){
-        return department;
-    }
-    public String getPosition(){
-        return position;
-    }
-    public String getStatus(){
-        return status;
-    }
-    public void approve(){
-        this.status = "Approved";
-    }
+        /** Get the company name */
+        public String getCompanyName() {
+            return companyName;
+        }
+        /** Get the department name */
 
-    public void reject() {
-        this.status = "Rejected";
-    }
+        public String getDepartment() {
+            return department;
+        }
+    
+            /** Get the position */
 
+            public String getPosition() {
+                return position;
+            }
+                /** Get current approval status */
+
+                public String getStatus() {
+                    return status;
+                }
+    
+               /** Approve this representative */
+    
+               public void approve() {
+                   this.status = "Approved";
+               }
+        /** Reject this representative */
+
+
+        public void reject() {
+            this.status = "Rejected";
+        }
+    
+    /** Check if representative is approved */
     public boolean isApproved() 
     {
         if (status.equalsIgnoreCase("Approved")) {
@@ -53,17 +84,21 @@ public class CompanyRepresentative extends User {
         }
     }
     
+    /** Get max_created flag */
 
     public  boolean getMaxCreated()
     {
         return max_created;
     }
 
+        /** Set max_created flag */
+
     public void setMaxCreated(boolean status)
     {
         max_created = status;
     }
 
+        /** Returns user type as string */
     @Override
     public String getUserType() { return "Company Representative"; }
 

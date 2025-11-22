@@ -2,6 +2,11 @@ package models;
 
 import java.time.LocalDate;
 
+/**
+ * Represents an Internship opportunity posted by a company.
+ * Contains all relevant information such as title, company, eligibility, dates, slots, and status.
+ */
+
 public class Internship {
     private final String id;
     private final String title;
@@ -15,6 +20,24 @@ public class Internship {
     private String status;                 // Pending / Approved / Rejected / Filled
     private int slots;                     // Max 10
     private boolean visible;
+
+
+    /**
+     * Constructor for Internship.
+     *
+     * @param id                Unique internship ID
+     * @param title             Internship title
+     * @param company           Name of the company
+     * @param representativeId  User ID of the company representative
+     * @param major             Target major for the internship
+     * @param yearType          Eligibility level (Basic/Intermediate/Advanced)
+     * @param description       Description of the internship
+     * @param openDate          Date applications open
+     * @param closeDate         Date applications close
+     * @param slots             Number of available slots
+     * @param visible           Whether the internship is visible to students
+     * @param status            Current status (Pending/Approved/Rejected/Filled)
+     */
 
     public Internship(String id, String title, String company, String representativeId, String major, String yearType, String description, LocalDate openDate, LocalDate closeDate,
                       int slots, boolean visible, String status) {
@@ -74,17 +97,22 @@ public class Internship {
         return visible;
     }
 
-    //setter
+      /** Setters */
     public void setStatus(String status) { 
         this.status = status; 
     }
-    public void setSlots(int slots) { 
-        this.slots = slots; 
+
+    public void setSlots(int slots) {
+        this.slots = slots;
     }
+    
+    /** Toggle visibility on/off */
     public void toggleVisibility() {
         visible = !visible;
     }
 
+
+    /** Returns a full string representation of internship for staff/admin view */
     @Override
     public String toString() {
         return String.format(
@@ -93,11 +121,12 @@ public class Internship {
                 visible ? "Yes" : "No");
     }
     
-
+    /** Alias for yearType (for filtering convenience) */
     public String getLevel() {
         return yearType;
     }
 
+    /** Returns a simplified string for student view (excludes status/visibility) */
    public String view_student() {
         return String.format("[%s] %s (%s) - %s | Level: %s | Major: %s | Open Date : %s | Close Date : %s | Slots: %d |",
                 id, title, company, description, yearType, major,openDate,closeDate, slots);
@@ -105,3 +134,4 @@ public class Internship {
 
 
 }
+/** Returns a full string representation of internship for staff/admin view */

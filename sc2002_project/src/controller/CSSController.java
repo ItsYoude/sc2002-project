@@ -15,6 +15,12 @@ import utility.MajorFilter;
 import utility.StatusFilter;
 import utility.UserFilterSettings;
 
+
+/**
+ * Controller for managing Career Center Staff (CSS) operations.
+ * Handles company representative approvals, internship approvals,
+ * withdrawal requests, and filtering internships for staff members.
+ */
 public class CSSController {
     private static CSSController instance;
     private final CompanyRepController repController;
@@ -25,8 +31,11 @@ public class CSSController {
     private final Scanner sc;
     private final FilterManager filterManager; 
 
-
-   public CSSController(ApplicationController applicationController, CompanyRepController repController,InternshipController internshipController,FilterManager filterManager) {
+    /**
+     * Constructor to initialize the CSSController with required controllers and filter manager.
+     */
+    public CSSController(ApplicationController applicationController, CompanyRepController repController,
+            InternshipController internshipController, FilterManager filterManager) {
         this.applicationController = applicationController;
         this.repController = repController;
         this.withdrawRequests = new ArrayList<>();
@@ -37,25 +46,30 @@ public class CSSController {
         instance = this;
     }
     
+    /** Returns all career center staff members. */
     public List<CareerCenterStaff> getAllStaff() {
-    return staffList;
-}
+        return staffList;
+    }
 
+
+    /** Returns the singleton instance of CSSController. */
     public static CSSController getInstance() {
         return instance;
     }
 
+    /** Returns the list of withdrawal requests. */
     public List<WithdrawRequest> getWithdrawList()
     {
         return withdrawRequests;
     }
 
+    /** Sets the list of withdrawal requests. */
     public void setWithdrawlist(List<WithdrawRequest> withdraw_list)
     {
         this.withdrawRequests = withdraw_list;
     }
     
-
+    /** Handles company representative approval/rejection process. */
     public void manageCompanyRepresentatives() {
         System.out.println("Managing company representative accounts...");
         // TODO: integrate with CSSController
@@ -117,9 +131,10 @@ public class CSSController {
             System.out.println("Invalid action. Please enter 1 or 2.");
 
         }
-        
+
     }
     
+    /** Retrieves a withdrawal request by ID. */
     public WithdrawRequest getRequestById(String id) {
         for (WithdrawRequest req : withdrawRequests) {
             if (req.getId().equals(id)) {
@@ -130,12 +145,16 @@ public class CSSController {
         }
         return null;
     }
+
+    /** Returns the list of pending withdrawal requests. */
     public List<WithdrawRequest> getPendingWithdrawalRequests() {
         return withdrawRequests.stream()
-            .filter(r -> r.getStatus().equals("Pending"))
-            .collect(Collectors.toList());
+                .filter(r -> r.getStatus().equals("Pending"))
+                .collect(Collectors.toList());
     }
 
+
+    /** Adds a new withdrawal request and saves it. */
     public void addWithdrawRequest(WithdrawRequest req) {
         withdrawRequests.add(req);
         //this is a list that is not persistent yet includes id,student,internship,reason,status
@@ -144,7 +163,7 @@ public class CSSController {
 
     }
 
-    //check if there exist a pending withdrawal request. 
+    /** Checks if a pending withdrawal request already exists for the student and internship. */
     public boolean checkIfExist(WithdrawRequest req) {
         return withdrawRequests.stream()
                 .anyMatch(r -> r.getStudent().getName().equalsIgnoreCase(req.getStudent().getName()) &&
@@ -152,6 +171,8 @@ public class CSSController {
                         r.getStatus().equalsIgnoreCase("Pending"));
     }
         
+
+    /** Displays all withdrawal requests. */
     public void viewAllWithdrawlRequests()
     {
         if (!withdrawRequests.isEmpty()) {
@@ -162,27 +183,31 @@ public class CSSController {
         }
     }
     
+    /** Returns all withdrawal requests submitted by a specific student. */
     public List<WithdrawRequest> getWithdrawalRequestsForStudent(Student student) {
         return withdrawRequests.stream()
                 .filter(req -> req.getStudent().getUserId().equalsIgnoreCase(student.getUserId()))
                 .collect(Collectors.toList());
     }
 
-
+    /** Displays all pending withdrawal requests. */
     public void viewWithdrawalRequests() {
         List<WithdrawRequest> pending = withdrawRequests.stream()
-            .filter(r -> r.getStatus().equals("Pending"))
-            .collect(Collectors.toList());
+                .filter(r -> r.getStatus().equals("Pending"))
+                .collect(Collectors.toList());
         for (WithdrawRequest r : pending) {
             System.out.println("Request ID: " + r.getId() + " | " + r);
         }
     }
+    
+
+    /** Handles approval or rejection of a withdrawal request and updates related records. */
     public void handleWithdrawalRequest(WithdrawRequest request, boolean approve) {
         Student student = request.getStudent();
         Internship internship = request.getInternship();
-        
+
         if (approve) {
-            request.setStatus("Approved"); 
+            request.setStatus("Approved");
             Application app = applicationController.getApplication(student, internship);
             if (app != null) {
 
@@ -197,8 +222,7 @@ public class CSSController {
                     }
                 }
 
-                if (student.getAcceptedInternshipId() != null)
-                {
+                if (student.getAcceptedInternshipId() != null) {
                     //check if the acceptedInternship is this internship, if it is, remove. 
                     if (student.getAcceptedInternshipId().equalsIgnoreCase(request.getInternship().getId())) {
                         //System.out.println("This is accepeted ! "+student.getAcceptedInternshipId());
@@ -230,20 +254,17 @@ public class CSSController {
                     }
                 }
 
-                
-                
                 //update student, application, withdraw, internship records into csv
                 FileService.saveStudents(StudentController.getAllStudents());
                 FileService.saveWithdrawRequests(withdrawRequests);
                 FileService.saveInternships(internshipController.getAllInternships());
-        
 
                 System.out.println("Withdrawal request approved.");
             } else {
-                System.out.println("Application not found for student " 
-                                + student.getName() + " and internship " 
+                System.out.println("Application not found for student "
+                        + student.getName() + " and internship "
                         + internship.getTitle());
-     
+
             }
         } else {
             //set request to reject and save to the csv
@@ -253,12 +274,9 @@ public class CSSController {
 
         }
 
-
-
-
-
     }
-
+    
+    /** Handles approval or rejection of an internship by CSS staff. */
     public void handleInternshipApproval(Internship internship, boolean approve,
             InternshipController internshipController) {
         if (internship == null || !internship.getStatus().equalsIgnoreCase("Pending")) {
@@ -277,7 +295,7 @@ public class CSSController {
     }
     
 
-
+    /** Returns internships filtered according to the staff member's saved settings. */
     public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
         UserFilterSettings settings = filterManager.getFilters(userId);
 
@@ -301,19 +319,17 @@ public class CSSController {
 
     }
     
+    /** Saves filter settings for a career center staff member. */
     public void saveUserFilterSettings(CareerCenterStaff staff, UserFilterSettings settings) {
         filterManager.setFilters(staff.getUserId(), settings);
     }
 
+    /** Returns previously saved filter settings for a staff member. */
     public UserFilterSettings getPreviousFilter(String userId)
     {
         return filterManager.getFilters(userId);
 
     }
-
-
-
-
 
 
 

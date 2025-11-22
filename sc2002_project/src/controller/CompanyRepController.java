@@ -3,7 +3,6 @@ package controller;
 import java.util.*;
 import models.CompanyRepresentative;
 import models.Internship;
-import models.Student;
 import utility.ClosingDateFilter;
 import utility.FileService;
 import utility.FilterManager;
@@ -13,42 +12,76 @@ import utility.MajorFilter;
 import utility.StatusFilter;
 import utility.UserFilterSettings;
 
+
+/**
+ * Controller for managing Company Representative operations.
+ * Handles registration, approval, rejection, loading/saving reps, 
+ * and filtering internships for company representatives.
+ */
 public class CompanyRepController { //interaction between UI and CompanyRepresentative 
+    /** List of pending company representatives. */
     private List<CompanyRepresentative> pendingReps = new ArrayList<>();
-    private List<CompanyRepresentative> approvedReps = new ArrayList<>();
-    private List<CompanyRepresentative> rejectedReps = new ArrayList<>();
+
+     /** List of approved company representatives. */
+
+     private List<CompanyRepresentative> approvedReps = new ArrayList<>();
+     /** List of rejected company representatives. */
+
+     private List<CompanyRepresentative> rejectedReps = new ArrayList<>();
+
+    /** Singleton instance of the controller. */
+
     private static CompanyRepController instance;
 
+    /** Master list of all company representatives. */
     private List<CompanyRepresentative> companyReps = new ArrayList<>();
+
+    /** Manager for user-specific internship filters. */
     private final FilterManager filterManager; 
 
 
-    public CompanyRepController(FilterManager filterManager) {// Constructor
-        this.filterManager = filterManager;
-        loadReps();
-        instance = this;
-    }
 
-    public static CompanyRepController getInstance() {
-        return instance;
-    }
+
+        /**
+     * Constructor to initialize the controller with a filter manager.
+     * @param filterManager the filter manager to use
+     */
+        public CompanyRepController(FilterManager filterManager) {// Constructor
+            this.filterManager = filterManager;
+            loadReps();
+            instance = this;
+        }
+    
+   /** Returns the singleton instance of this controller. */
+
+   public static CompanyRepController getInstance() {
+       return instance;
+   }
+    
+     /** Returns the list of all company representatives. */
 
     public List<CompanyRepresentative> getAllCompanyReps() {
         return companyReps;
     }
 
-    // Getters for UI/CSS/RepController
+       /** Returns the list of pending reps. */
     public List<CompanyRepresentative> getPendingReps() {
         return pendingReps;
     }
+    /** Returns the list of approved reps. */
 
     public List<CompanyRepresentative> getApprovedReps() {
         return approvedReps;
     }
+    /** Returns the list of rejected reps. */
 
     public List<CompanyRepresentative> getRejectedReps() {
         return rejectedReps;
     }
+
+
+
+    /** Loads company representatives from file and categorizes them by status. */
 
     public final void loadReps() { //load all company rep entries into the two list 
         //clear both list first, then append the latest records into the two list
@@ -78,6 +111,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         }
 
     }
+    /** Saves all company representatives to file. */
 
     public boolean saveAllReps() {
         // Save the master list that contains all reps
@@ -88,20 +122,9 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return true;
     }
 
-    //Caven5@gmail.com version
 
-    // public boolean saveAllReps() {
 
-    // // Save the master list that contains all reps
-
-    // if (!FileService.saveCompanyReps(companyReps)) {
-    //     System.out.println("Error while saving.");
-    //     return false;
-    // }
-    // return true;
-    // }
-
-    //serach by user id in selected list, (pending or approved)
+    /** Finds a representative by user ID in the company representative list. */
     private CompanyRepresentative findRepInList(String userId, List<CompanyRepresentative> list) {
         for (CompanyRepresentative rep : list) {
             if (rep.getUserId().equalsIgnoreCase(userId)) { //userID exist within system. 
@@ -111,7 +134,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return null;
     }
 
-    // Register a new rep (adds to pending list)
+     /** Registers a new company representative (adds to pending list). */
     public boolean registerRep(String company_id, String name, String companyName, String department, String position,
             String email) {
 
@@ -146,9 +169,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return true;
     }
 
-    //Approve a rep
-    //each rep account is tied to unique company ID
-
+    /** Approves a pending representative. */
     public boolean approveRep(String company_id) {
         CompanyRepresentative rep = findRepInList(company_id, pendingReps);
         if (rep != null) // found and delete
@@ -171,7 +192,8 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
 
     }
 
-    // Reject a rep
+        /** Rejects a pending representative. */
+
     public boolean rejectRep(String company_id) {
         CompanyRepresentative rep = findRepInList(company_id, pendingReps);
         if (rep != null) //found and delete
@@ -192,17 +214,8 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
         return false;
     }
 
-    // public boolean findAvaliableID(String id)
-    // {
-    //     List<Internship> internships = FileService.loadInternships();
-    //     for (Internship i : internships) {
-    //         if (i.getId().equalsIgnoreCase(id)) {
-    //             System.out.println("ID is taken, choose another.");
-    //         }
-    //     }
-    //     return true;
-    // }
 
+    /** Returns the latest internship ID based on existing internships. */
     public String getLatestId()
     {
         List<Internship> internships = FileService.loadInternships();
@@ -213,7 +226,7 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     
     
     
-    
+    /** Checks if the representative has reached the maximum allowed created internships. */
     public void findIfMaxInternshipCreated(CompanyRepresentative rep, InternshipController internshipController) {
         List<Internship> allInternships = internshipController.getAllInternships();
         long count = allInternships.stream()
@@ -229,7 +242,8 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
     }
 
 
-     public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
+    /** Returns internships filtered according to the representative's saved settings. */
+    public List<Internship> getFilteredInternships(String userId, List<Internship> all) {
         UserFilterSettings settings = filterManager.getFilters(userId);
 
         FilterPipeline pipeline = new FilterPipeline();
@@ -252,24 +266,16 @@ public class CompanyRepController { //interaction between UI and CompanyRepresen
 
     }
     
+    /** Saves filter settings for a company representative. */
     public void saveUserFilterSettings(CompanyRepresentative companyRepresentative, UserFilterSettings settings) {
         filterManager.setFilters(companyRepresentative.getUserId(), settings);
     }
 
+    /** Returns previously saved filter settings for a representative. */
     public UserFilterSettings getPreviousFilter(String userId)
     {
         return filterManager.getFilters(userId);
 
     }
-
-
-
-
-
-
-
-
-
-
 
 }

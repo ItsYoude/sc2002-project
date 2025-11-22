@@ -8,11 +8,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
 import models.CompanyRepresentative;
 import models.Internship;
-import models.Student;
 import utility.UserFilterSettings;
+
+
+/**
+ * Provides a console-based user interface for Company Representatives.
+ * Allows them to create internships, view their postings, manage applications,
+ * toggle internship visibility, and change their password.
+ */
 
 public class CompanyRepUI {
     private final CompanyRepresentative representative;
@@ -20,6 +25,15 @@ public class CompanyRepUI {
     private final ApplicationController applicationController;
     private final CompanyRepController companyRepController;
     private final Scanner sc;
+
+        /**
+     * Constructs a CompanyRepUI for a specific representative with controllers.
+     *
+     * @param representative       The logged-in company representative
+     * @param internshipController The InternshipController instance
+     * @param applicationController The ApplicationController instance
+     * @param companyRepController  The CompanyRepController instance
+     */
 
     public CompanyRepUI(CompanyRepresentative representative, InternshipController internshipController,
             ApplicationController applicationController, CompanyRepController companyRepController) {
@@ -30,166 +44,169 @@ public class CompanyRepUI {
         this.sc = new Scanner(System.in);
     }
 
-    public void showMenu() {
-        boolean continueMenu = true;
+        /**
+     * Displays the main menu for the company representative.
+     * Loops until logout or password change.
+     */
+        public void showMenu() {
+            boolean continueMenu = true;
 
-        while (continueMenu) {
-            System.out.println("\n--- Company Representative Dashboard ---");
-            System.out.println("1. Create Internship Opportunity");
-            System.out.println("2. View My Created Internships");
-            System.out.println("3. Approve/Reject Applications");
-            System.out.println("4. Toggle Internship Visibility");
-            System.out.println("5. Change Password");
-            System.out.println("0. Logout");
-            System.out.print("Select option: ");
+            while (continueMenu) {
+                System.out.println("\n--- Company Representative Dashboard ---");
+                System.out.println("1. Create Internship Opportunity");
+                System.out.println("2. View My Created Internships");
+                System.out.println("3. Approve/Reject Applications");
+                System.out.println("4. Toggle Internship Visibility");
+                System.out.println("5. Change Password");
+                System.out.println("0. Logout");
+                System.out.print("Select option: ");
 
-            String choice = sc.nextLine().trim();
-            switch (choice) {
-                case "1":
-                    createInternship();
-                    break;
-                case "2":
-                    //viewPostedInternships();
-                    viewUserFilteredInternships();
-                    break;
-                case "3":
-                    manageApplications();
-                    break;
-                case "4":
-                    toggleVisibility();
-                    break;
-                case "5":
-                    boolean changedRep = representative.changePassword();
-                    if (changedRep)
+                String choice = sc.nextLine().trim();
+                switch (choice) {
+                    case "1":
+                        createInternship();
+                        break;
+                    case "2":
+                        //viewPostedInternships();
+                        viewUserFilteredInternships();
+                        break;
+                    case "3":
+                        manageApplications();
+                        break;
+                    case "4":
+                        toggleVisibility();
+                        break;
+                    case "5":
+                        boolean changedRep = representative.changePassword();
+                        if (changedRep)
+                            continueMenu = false;
+                        break;
+                    case "0":
+                        System.out.println("Logging out...");
                         continueMenu = false;
-                    break;
-                case "0":
-                    System.out.println("Logging out...");
-                    continueMenu = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again!");
+                        break;
+                    default:
+                        System.out.println("Invalid option. Please try again!");
+                }
             }
         }
-    }
 
-    private void createInternship() {
-        companyRepController.findIfMaxInternshipCreated(representative, internshipController);
+        /**
+     * Creates a new internship posting by interacting with the user.
+     * Validates inputs such as slots, dates, and year type.
+     */
+        private void createInternship() {
+            companyRepController.findIfMaxInternshipCreated(representative, internshipController);
 
-        if (!(representative.getMaxCreated())) {
-            String id, title, major, yearType, description;
-            int slots;
-            LocalDate openDate, closeDate;
+            if (!(representative.getMaxCreated())) {
+                String id, title, major, yearType, description;
+                int slots;
+                LocalDate openDate, closeDate;
 
-            System.out.println("\n--- Create Internship Posting ---");
+                System.out.println("\n--- Create Internship Posting ---");
 
-            // do {
-            //     System.out.print("Enter internship ID: ");
-            //     id = sc.nextLine().trim();
-            // } while (id.isEmpty() || !companyRepController.findAvaliableID(id)); //implement check the csv for exisitng ids. 
-            String listing_id = companyRepController.getLatestId();
-            System.out.println("Creating Internsip Posting for " + representative.getCompanyName() + " Listing ID = "
-                    + listing_id);
+                // do {
+                //     System.out.print("Enter internship ID: ");
+                //     id = sc.nextLine().trim();
+                // } while (id.isEmpty() || !companyRepController.findAvaliableID(id)); //implement check the csv for exisitng ids. 
+                String listing_id = companyRepController.getLatestId();
+                System.out
+                        .println("Creating Internsip Posting for " + representative.getCompanyName() + " Listing ID = "
+                                + listing_id);
 
-            do {
-                System.out.print("Enter internship title: ");
-                title = sc.nextLine().trim();
-            } while (title.isEmpty());
+                do {
+                    System.out.print("Enter internship title: ");
+                    title = sc.nextLine().trim();
+                } while (title.isEmpty());
 
-            do {
-                System.out.print("Enter prefered major: ");
-                major = sc.nextLine().trim();
-            } while (major.isEmpty());
+                do {
+                    System.out.print("Enter prefered major: ");
+                    major = sc.nextLine().trim();
+                } while (major.isEmpty());
 
-            while (true) {
-                System.out.print("Enter target year type (Basic/Intermediate/Advanced): ");
-                yearType = sc.nextLine().trim();
+                while (true) {
+                    System.out.print("Enter target year type (Basic/Intermediate/Advanced): ");
+                    yearType = sc.nextLine().trim();
 
-                if (yearType.equalsIgnoreCase("Basic")
-                        || yearType.equalsIgnoreCase("Intermediate")
-                                | yearType.equalsIgnoreCase("Advanced")) {
-                    break;
-                } else {
-                    System.out
-                            .println("Invalid input. Enter either Basic for Y1/Y2 or Intermediate/Advanced for Y1-Y4.");
-                }
-            }
-
-            while (true) {
-                System.out.print("Enter number of slots (1 to 10): ");
-                String input = sc.nextLine().trim();
-
-                try {
-                    slots = Integer.parseInt(input);
-                    if (slots < 1 || slots > 10) {
-                        System.out.println("Slots must be between 1-10.");
-                    } else {
+                    if (yearType.equalsIgnoreCase("Basic")
+                            || yearType.equalsIgnoreCase("Intermediate")
+                                    | yearType.equalsIgnoreCase("Advanced")) {
                         break;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter only integers.");
-                }
-            }
-
-            do {
-                System.out.print("Enter internship description: ");
-                description = sc.nextLine().trim();
-            } while (description.isEmpty());
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            while (true) {
-                System.out.print("Enter opening date (yyyy-MM-dd): ");
-                String input = sc.nextLine().trim();
-
-                try {
-                    openDate = LocalDate.parse(input, formatter);
-                    break;
-                } catch (Exception e) {
-                    System.out.println("Invalid date! Please use yyyy-MM-dd format.");
-                }
-            }
-
-            // Closing Date (must be after opening date)
-            while (true) {
-                System.out.print("Enter closing date (yyyy-MM-dd): ");
-                String input = sc.nextLine().trim();
-
-                try {
-                    closeDate = LocalDate.parse(input, formatter);
-
-                    if (closeDate.isBefore(openDate)) {
-                        System.out.println("Closing date cannot be earlier than opening date!");
                     } else {
-                        break;
+                        System.out
+                                .println(
+                                        "Invalid input. Enter either Basic for Y1/Y2 or Intermediate/Advanced for Y1-Y4.");
                     }
-
-                } catch (Exception e) {
-                    System.out.println("Invalid date! Please use yyyy-MM-dd format.");
                 }
-            }
 
-            Internship newInternship = new Internship(listing_id, title, representative.getCompanyName(),
-                    representative.getUserId(), major, yearType, description, openDate, closeDate, slots, true,
-                    "Pending");
-            internshipController.addInternship(newInternship);
-            System.out.println("Internship created successfully and is visible by default.");
-        } else {
-            System.out.println("Max internships created for " + representative.getName());
+                while (true) {
+                    System.out.print("Enter number of slots (1 to 10): ");
+                    String input = sc.nextLine().trim();
+
+                    try {
+                        slots = Integer.parseInt(input);
+                        if (slots < 1 || slots > 10) {
+                            System.out.println("Slots must be between 1-10.");
+                        } else {
+                            break;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter only integers.");
+                    }
+                }
+
+                do {
+                    System.out.print("Enter internship description: ");
+                    description = sc.nextLine().trim();
+                } while (description.isEmpty());
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+                while (true) {
+                    System.out.print("Enter opening date (yyyy-MM-dd): ");
+                    String input = sc.nextLine().trim();
+
+                    try {
+                        openDate = LocalDate.parse(input, formatter);
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Invalid date! Please use yyyy-MM-dd format.");
+                    }
+                }
+
+                // Closing Date (must be after opening date)
+                while (true) {
+                    System.out.print("Enter closing date (yyyy-MM-dd): ");
+                    String input = sc.nextLine().trim();
+
+                    try {
+                        closeDate = LocalDate.parse(input, formatter);
+
+                        if (closeDate.isBefore(openDate)) {
+                            System.out.println("Closing date cannot be earlier than opening date!");
+                        } else {
+                            break;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("Invalid date! Please use yyyy-MM-dd format.");
+                    }
+                }
+
+                Internship newInternship = new Internship(listing_id, title, representative.getCompanyName(),
+                        representative.getUserId(), major, yearType, description, openDate, closeDate, slots, true,
+                        "Pending");
+                internshipController.addInternship(newInternship);
+                System.out.println("Internship created successfully and is visible by default.");
+            } else {
+                System.out.println("Max internships created for " + representative.getName());
+            }
         }
-    }
 
-    private void viewPostedInternships() {
-        System.out.println("\nYour Posted Internships:");
-        // List<Internship> list = internshipController.getAllInternships();
-        // for (Internship i : list) {
-        //     if (i.getCompany().equalsIgnoreCase(representative.getCompanyName())) {
-        //         System.out.println(i);
-        //     }
-        // }
-
-    }
-    
+     /**
+     * Displays internships filtered by previous or newly-set filters.
+     * Allows setting status, major, level, and closing date filters.
+     */
     private void viewUserFilteredInternships()
     {       
     System.out.println("Fetching and sorting internships for your profile...");
@@ -281,22 +298,10 @@ public class CompanyRepUI {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Manages applications for a specific internship.
+     * Allows approving or rejecting student applications.
+     */
 
 
     private void manageApplications() {
@@ -355,6 +360,10 @@ public class CompanyRepUI {
 
     }
 
+     /**
+     * Toggles the visibility of an internship.
+     * Only applicable if the internship belongs to the representative.
+     */
     private void toggleVisibility() {
         System.out.print("Enter internship ID to toggle visibility: ");
         String id = sc.nextLine().trim();

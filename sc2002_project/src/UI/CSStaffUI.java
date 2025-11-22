@@ -5,7 +5,6 @@ import controller.CSSController;
 import controller.CompanyRepController;
 import controller.InternshipController;
 import controller.UserController;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,12 @@ import utility.StatusFilter;
 import utility.UserFilterSettings;
 import utility.VisibilityFilter;
 
+/**
+ * Provides a console-based user interface for Career Center Staff (CSS) users.
+ * Allows them to view internships, manage applications, approve/reject
+ * company representatives and internship postings, handle withdrawal requests,
+ * generate reports, and change passwords.
+ */
 
 public class CSStaffUI {
     private final CareerCenterStaff staff;
@@ -31,7 +36,16 @@ public class CSStaffUI {
     private final CompanyRepController repController;
     private final Scanner sc;
 
-    // Constructor
+        /**
+     * Constructs a CSStaffUI instance for a logged-in Career Center Staff user.
+     *
+     * @param staff                The logged-in Career Center Staff
+     * @param userController       UserController instance
+     * @param internshipController InternshipController instance
+     * @param applicationController ApplicationController instance
+     * @param careerController     CSSController instance
+     * @param repController        CompanyRepController instance
+     */
     public CSStaffUI(CareerCenterStaff staff, UserController userController, InternshipController internshipController, ApplicationController applicationController,
             CSSController careerController,
             CompanyRepController repController) {
@@ -44,6 +58,10 @@ public class CSStaffUI {
         this.sc = new Scanner(System.in);
     }
 
+        /**
+     * Displays the main dashboard menu for Career Center Staff.
+     * Allows staff to navigate options until logout.
+     */
     public void showMenu() {
         boolean continueMenu = true;
 
@@ -137,7 +155,10 @@ public class CSStaffUI {
     }
 
 
-
+    /**
+     * Generates internship reports filtered by status, major, level, or visibility.
+     * Uses FilterPipeline for combining multiple filters if needed.
+     */
     private void generateReports() {
         List<Internship> list = internshipController.getAllInternships();
 
@@ -219,7 +240,10 @@ public class CSStaffUI {
         for (Internship i : filtered) System.out.println(i);
     }
 
-    //manage internship opportunity approval/reject
+        /**
+     * Approves or rejects internship postings pending Career Center Staff approval.
+     * Displays pending opportunities and prompts for decision.
+     */
     private void manageInternshipApprovals() {
 
         List<Internship> pendingOpportunities = internshipController.getPendingInternships();
@@ -265,7 +289,10 @@ public class CSStaffUI {
         }
     }
     
-
+    /**
+     * Displays internships filtered by previous or newly-set filters for Career Center Staff.
+     * Filters include status, major, level, and closing date.
+     */
     public void viewFilteredInternships()
     {
         System.out.println("Fetching and sorting internships for your profile...");

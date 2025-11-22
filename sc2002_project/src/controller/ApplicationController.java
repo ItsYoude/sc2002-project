@@ -2,9 +2,15 @@ package controller;
 
 import java.util.*;
 import models.*;
-import controller.StudentController;
-import controller.InternshipController;
 import utility.FileService;
+
+
+/**
+A controller that manages the operation of student's internship applications.
+ */
+
+
+
 
 public class ApplicationController {
 
@@ -23,13 +29,14 @@ public class ApplicationController {
     {
         return applications;
     }
-
-    // public ApplicationController()
-    // {
-
-    // }
-
     // Check if student can apply (max 3 active applications)
+
+
+    /**
+     Check if student is able to continue apply for more internships. Each student can only apply 3 active internships. 
+        */
+
+    
     private boolean canApply(Student student) {
         long activeCount = applications.stream()
                 .filter(app -> app.getStudent().getUserId().equalsIgnoreCase(student.getUserId()))
@@ -39,7 +46,9 @@ public class ApplicationController {
         return activeCount < 3;
     }
 
-    // Check if student is eligible based on year and internship level
+        /**
+Check if student is eligible based on year and internship level        */
+
     private boolean isEligible(Student student, Internship internship) {
         int year = student.getYearOfStudy();
         String level = internship.getYearType(); // Basic, Intermediate, Advanced
@@ -50,7 +59,10 @@ public class ApplicationController {
         return true;
     }
 
-    // Add new application
+    /**
+     Combined method of checking for 3 active applications and checking if student is elligible for said internship before applying for internship. 
+     */
+
     public void apply(Student student, Internship internship) {
         if (!canApply(student)) {
             System.out.println("You have reached the maximum of 3 active applications.");
@@ -84,22 +96,9 @@ public class ApplicationController {
 
     }
 
-    // Withdraw application
-    // public void withdraw(Student student, String internshipId) {
-    //     Iterator<Application> it = applications.iterator();
-    //     while (it.hasNext()) {
-    //         Application app = it.next();
-    //         if (app.getStudent().getUserId().equalsIgnoreCase(student.getUserId())
-    //                 && app.getInternship().getId().equalsIgnoreCase(internshipId)) {
-    //             it.remove();
-    //             System.out.println("Application withdrawn successfully!");
-    //             return;
-    //         }
-    //     }
-    //     System.out.println("No matching application found to withdraw.");
-    // }
-
-    // View all applications for a student
+    /**
+    View all applications of student      
+    */
     public void viewApplications(Student student) {
         System.out.println("\n--- My Applications ---");
         boolean found = false;
@@ -114,7 +113,9 @@ public class ApplicationController {
         }
     }
 
-    // View applications for an internship (for company rep)
+    /**
+     View applications for an internship (for company rep)
+     */
     public boolean viewApplicationsForInternship(Internship internship) {
         System.out.println("\n--- Applications for " + internship.getTitle() + " ---");
         boolean found = false;
@@ -127,14 +128,15 @@ public class ApplicationController {
         return found;
     }
 
-    // Update application status (approve/reject)
+        /**
+    Update application status (approve/reject)
+     */
     public void updateApplicationStatus(Internship internship, String studentName, String newStatus) {
         for (Application app : applications) {
             if (app.getInternship().getId().equalsIgnoreCase(internship.getId())
                     && app.getStudent().getName().equalsIgnoreCase(studentName)) {
                 app.setStatus(newStatus);
 
-                //app.getStudent().updateStatusForRecord(internship.getId(), newStatus);
 
                 List<Student> student_list = StudentController.getAllStudents();
 
@@ -155,7 +157,10 @@ public class ApplicationController {
         System.out.println("No matching application found for that student and internship.");
     }
 
-    // Get applications by student (optional for data handling)
+
+            /**
+    Get applications by student (optional for data handling)
+     */
     public List<Application> getApplicationsByStudent(Student student) {
         List<Application> result = new ArrayList<>();
         for (Application app : applications) {
@@ -166,8 +171,9 @@ public class ApplicationController {
         return result;
     }
 
-    
-    // NEW: For Career Center Staff: view all applications
+     /**
+     For Career Center Staff: view all applications
+     */
     public void viewAllApplications() {
         System.out.println("\n--- All Applications ---");
         if (applications.isEmpty()) {
@@ -179,7 +185,9 @@ public class ApplicationController {
         }
     }
 
-    //retrieve only this student's applications
+     /**
+     For Student: retrieval of student's application for said internship.
+     */
     public Application getApplication(Student student, Internship internship) {
         // Assuming you have a list of all applications
         return applications.stream()
@@ -189,7 +197,9 @@ public class ApplicationController {
                 .orElse(null); // or throw a custom exception if not found
     }
 
-    //retrieve only pending applications
+     /**
+     For Student: Check if application for this student's internship is pending.
+     */
     public boolean isPending(String student_name, Internship internship) {
         for (Application app : applications) {
             if (app.getInternship().getId().equalsIgnoreCase(internship.getId())) {
@@ -204,11 +214,12 @@ public class ApplicationController {
 
             }
         }
-        //System.out.println("You entered a student that did not apply for this Internship");
         return false;
     }
 
-
+     /**
+     For Student: Get only withdrawable applications for student.
+     */
     public List<Application> getOnlyWithdrawableApplications(Student student)
     {
      List<Application> result = new ArrayList<>();
@@ -224,8 +235,6 @@ public class ApplicationController {
                     status.equalsIgnoreCase("Accepted")) 
                 {
                     result.add(app);
-            //     System.out.println("Reference of internship inside getWithdwaableApplication: " 
-            // + System.identityHashCode(app.getInternship()));
                 }
         }
         }

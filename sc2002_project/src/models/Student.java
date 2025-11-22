@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Scanner;
 import utility.FileService;
 
+/**
+ * Represents a student user in the internship system.
+ * Tracks applied internships, accepted placement, major, year of study, and allows
+ * actions like applying, accepting, withdrawing, and changing password.
+ */
+
 public class Student extends User {
     private String major;
     //private int year;
@@ -14,6 +20,18 @@ public class Student extends User {
     private List<AppliedRecord> appliedInternshipId; //list of internship ID
     private String acceptedInternshipId;
 
+
+
+     /**
+     * Constructor for Student
+     *
+     * @param userId      Unique user ID
+     * @param name        Student's name
+     * @param yearOfStudy Year of study (1-4)
+     * @param major       Student's major
+     * @param email       Student email
+     * @param password    Password
+     */
     public Student(String userId, String name, int yearOfStudy, String major, String email, String password) {
         super(userId, name, email, password);
         this.yearOfStudy = yearOfStudy;
@@ -35,6 +53,7 @@ public class Student extends User {
         return appliedInternshipId;
     }
 
+    /** Updates the status of an applied internship */
     public void updateStatusForRecord(String id,String status)
     {
         for (AppliedRecord record : appliedInternshipId) {
@@ -45,20 +64,23 @@ public class Student extends User {
         }
     }
 
+    /**
+     * Withdraw all applications except the accepted internship.
+     * Marks the accepted one as "Accepted" and others as "Withdrawn".
+     */
     public void withdrawAllExcept(String id) //withdraw all other applications and accept placement. 
     {
-        for (AppliedRecord record : appliedInternshipId) 
-        {
-            if (!record.getInternshipId().equalsIgnoreCase(id))
-            {
+        for (AppliedRecord record : appliedInternshipId) {
+            if (!record.getInternshipId().equalsIgnoreCase(id)) {
                 record.setStatus("Withdrawn");
-            }
-            else
-            {
+            } else {
                 record.setStatus("Accepted");
             }
         }
     }
+
+    
+    /** Prints applied internships and their statuses */
 
     public void readAppliedRecord()
     {

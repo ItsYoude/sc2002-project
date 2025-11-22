@@ -3,7 +3,14 @@ import controller.*;
 import java.util.Scanner;
 import models.*;
 
-/*LoginUI ---- CLI for User Login + route them to respective dashboard upon successful login */
+/**
+ * Provides a console-based login and registration interface for the Internship
+ * Placement Management System. Handles authentication, user type verification,
+ * and routing to the respective dashboard (Student, Company Representative,
+ * Career Center Staff) upon successful login. Also handles registration of
+ * Company Representatives.
+ */
+
 public class LoginUI {
     private final SystemController systemController;
     private final UserController userController;
@@ -14,10 +21,22 @@ public class LoginUI {
     private final StudentController studentController;
     private final Scanner sc;
 
-    //contructor
+  
+    /**
+     * Constructs a LoginUI instance with required controllers for system operations.
+     *
+     * @param systemController        SystemController instance
+     * @param userController          UserController instance
+     * @param internshipController    InternshipController instance
+     * @param applicationController   ApplicationController instance
+     * @param careerController        CSSController instance
+     * @param companyRepController    CompanyRepController instance
+     * @param studentController       StudentController instance
+     */
     public LoginUI(SystemController systemController, UserController userController,
             InternshipController internshipController, ApplicationController applicationController,
-            CSSController careerController, CompanyRepController companyRepController, StudentController studentController) {
+            CSSController careerController, CompanyRepController companyRepController,
+            StudentController studentController) {
         this.systemController = systemController;
         this.userController = userController;
         this.internshipController = internshipController;
@@ -28,6 +47,14 @@ public class LoginUI {
         this.sc = new Scanner(System.in);
     }
 
+    
+        /**
+     * Handles the login process:
+     * 1. Prompts for User ID and validates its existence.
+     * 2. Prompts for password and validates credentials.
+     * 3. Checks account status for Company Representatives.
+     * 4. Redirects authenticated users to their respective dashboards.
+     */
     private void handleLogin() {
         systemController.initializeSystem();
 
@@ -102,7 +129,12 @@ public class LoginUI {
 }
 
 
-    
+        /**
+     * Displays the initial login screen allowing users to:
+     * 1. Login
+     * 2. Register as Company Representative
+     * 3. Exit the system
+     */
     public void displayLoginScreen() {
         while (true) {
             System.out.println("Internship Placement Management System");
@@ -128,7 +160,11 @@ public class LoginUI {
         }
     }
 
-
+    /**
+     * Handles registration of a new Company Representative.
+     * Prompts for required details and submits to CompanyRepController.
+     * Shows success message if registration is pending approval.
+     */
     private void handleCompanyRepRegistration() {
             System.out.println("Register as Company Representative");
             
@@ -169,7 +205,13 @@ public class LoginUI {
             
     }
 
-
+    /**
+     * Redirects an authenticated user to the appropriate dashboard
+     * based on their user type.
+     *
+     * @param user The authenticated User
+     * @return true if user was redirected successfully, false if unknown user type
+     */
     private boolean redirectToDashboard(User user) {
         switch (user.getUserType()) {
             case "Student": {

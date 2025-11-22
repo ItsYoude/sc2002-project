@@ -1,49 +1,30 @@
 package utility;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import models.Internship;
-import models.Student;
-
+/**
+ * Represents a filter for a list of {@link Internship} objects.
+ * 
+ * <p>
+ * Implementations of this interface define the filtering logic based on
+ * criteria such as status, major, level, visibility, etc.
+ * </p>
+ * 
+ * <p>
+ * Example usage:
+ * <pre>
+ * InternshipFilter statusFilter = new StatusFilter("Approved");
+ * List&lt;Internship&gt; approvedInternships = statusFilter.filter(allInternships);
+ * </pre>
+ * </p>
+ */
 public interface InternshipFilter {
-
-    /**
-     * Filters a list of internships by student eligibility:
-     * - Major matches
-     * - Year type matches student's yearOfStudy
-     * - Internship is visible
+/**
+     * Filters a given list of internships according to specific criteria.
+     *
+     * @param internships the list of {@link Internship} objects to filter
+     * @return a new list containing only the internships that match the filter
      */
-
-
      List<Internship> filter(List<Internship> internships);
-
-
-
-
-    // public static List<Internship> filterByStatus(List<Internship> internships, String status) {
-    //     return internships.stream()
-    //             .filter(i -> i.getStatus().equalsIgnoreCase(status))
-    //             .collect(Collectors.toList());
-    // }
-
-    // public static List<Internship> filterByMajor(List<Internship> internships, String major) {
-    //     return internships.stream()
-    //             .filter(i -> i.getMajor().equalsIgnoreCase(major))
-    //             .collect(Collectors.toList());
-    // }
-
-    // public static List<Internship> filterByLevel(List<Internship> internships, String level) {
-    //     return internships.stream()
-    //             .filter(i -> i.getYearType().equalsIgnoreCase(level))
-    //             .collect(Collectors.toList());
-    // }
-
-    // public static List<Internship> filterVisible(List<Internship> internships) {
-    //     return internships.stream()
-    //             .filter(Internship::isVisible)
-    //             .collect(Collectors.toList());
-    // }
-
 
 }

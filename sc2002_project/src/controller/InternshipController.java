@@ -2,27 +2,17 @@ package controller;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 import models.*;
 import utility.ApprovedFilter;
 import utility.BeforeDateFilter;
 import utility.FileService;
-
-
-
-import utility.InternshipFilter; //NEW : Pipelined
+import utility.FilterPipeline; //NEW : Pipelined
+import utility.IInternshipSorter;
 import utility.LevelFilter;
 import utility.MajorFilter;
 import utility.NotFilledFilter;
-import utility.StatusFilter;
-import utility.FilterPipeline;
+import utility.TitleSorter;
 import utility.VisibilityFilter;
-
-
-
-import utility.IEligibilityFilter;
-import utility.IInternshipSorter; // NEW: Abstraction for sorting
-import utility.TitleSorter; // NEW: Concrete default sorter
 
 
 
@@ -31,29 +21,51 @@ import utility.TitleSorter; // NEW: Concrete default sorter
 // import utility.StudentEligibilityFilter; // NEW: Concrete default filter
 
 
+
+
+/**
+ * Controller for managing Internship operations.
+ * Handles loading, saving, adding internships, 
+ * filtering eligible internships for students, and viewing/sorting internships.
+ */
+
+
 public class InternshipController {
+    /** List of all internships. */
     private List<Internship> internships = new ArrayList<>();
 
     // NEW DIP FIELDS: These are the abstractions the controller relies on.
     //private final IEligibilityFilter eligibilityFilter;
+
+    /** Default sorter for internships. */
     private final IInternshipSorter defaultSorter;
 
+
+    /**
+     * Default constructor initializes controller with default sorter and loads internships.
+     */
     public InternshipController() {
         //this.eligibilityFilter = new StudentEligibilityFilter(); 
         this.defaultSorter = new TitleSorter();
         loadInternships();
     }
 
+    /**
+     * Constructor with custom sorter.
+     * @param defaultSorter the sorter to use for displaying internships
+     */
+
     public InternshipController(IInternshipSorter defaultSorter) {
         this.defaultSorter = defaultSorter;
         loadInternships();
     }
 
+    /** Loads all internships from file. */
     public void loadInternships() {
         internships = FileService.loadInternships();
     }
 
-    // Add internship
+    /** Adds a new internship and saves it. */
     public boolean addInternship(Internship internship) {
         internships.add(internship);
         if (!FileService.saveInternships(internships)) {
@@ -64,7 +76,7 @@ public class InternshipController {
     }
 
 
-    // Build a fresh pipeline for each method call
+    /** Builds a filter pipeline for a student based on eligibility criteria. */
     private FilterPipeline buildPipelineForStudent(Student student) {
         FilterPipeline pipeline = new FilterPipeline();
         pipeline.add(new ApprovedFilter());      // only Approved internships
@@ -77,6 +89,7 @@ public class InternshipController {
     }
 
 
+    /** Returns eligible internships for a student, optionally sorted. */
     public List<Internship> getEligibleInternships(Student student, IInternshipSorter sorter)
     {
         FilterPipeline pipeline = buildPipelineForStudent(student);
@@ -84,6 +97,7 @@ public class InternshipController {
         return defaultSorter.sort(filtered);
     }
     
+    /** Returns eligible internships for a student without sorting. */
     public List<Internship> getEligibleInternships(Student student)
     {
         FilterPipeline pipeline = buildPipelineForStudent(student);
@@ -94,7 +108,7 @@ public class InternshipController {
     
     
     
-    // For students: view visible internships by major/year level
+    /** Displays all visible internships filtered by major and year of study for students. */
     public void viewAllInternships(String major, int yearOfStudy) {
         // 1. Filter the list based on the original logic
         List<Internship> filteredList = new ArrayList<>();
@@ -122,7 +136,7 @@ public class InternshipController {
         }
     }
 
-    // For staff: Sorts all internships using the injected defaultSorter before printing.
+    /** Displays all internships, sorted using the default sorter, for staff. */
     public void viewAllInternships() {
         // 1. Sort the entire list using the injected defaultSorter (DIP in action)
         List<Internship> sortedList = defaultSorter.sort(this.internships);
@@ -138,7 +152,7 @@ public class InternshipController {
         }
     }
 
-    // Get internship by ID
+    /** Returns an internship by its ID. */
     public Internship getInternshipById(String id) {
         for (Internship i : internships) {
             if (i.getId().equalsIgnoreCase(id)) {
@@ -148,18 +162,22 @@ public class InternshipController {
         return null;
     }
 
+    /** Returns the list of all internships. */
     public List<Internship> getAllInternships() {
         return internships;
     }
 
+    /** Saves all internships to file. */
     public void saveAllInternships() {
         FileService.saveInternships(internships);
     }
 
+    /** Replaces the current internship list with a new list. */
     public void setInternshipList(List<Internship> internships) {
         this.internships = internships;
     }
 
+    /** Returns internships with status "Pending". */
     public List<Internship> getPendingInternships() {
         // Filter the main list where the status is "Pending"
         return internships.stream()
@@ -167,7 +185,7 @@ public class InternshipController {
                 .collect(Collectors.toList());
     }
 
-
+    /** Decrements slots of an internship after a student acceptance and updates status if filled. */
     public void decrementSlotsAfterAcceptance(String internship_id)
     {
         for (Internship it:internships)
