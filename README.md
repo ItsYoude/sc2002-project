@@ -49,13 +49,13 @@ This system utilizes the **Boundary-Control-Entity (BCE)** design pattern.
 
 * **View Opportunities:** Filtered automatically based on student's **Year of Study** and **Major**.
 * **Application Rules:** Enforces the limit of **3 active applications**.
-* **Level Eligibility:** Year 1/2 students restricted to **Basic-level** internships.
+* **Level Eligibility:** Year 1/2 students restricted to **Basic-level** internships. Year 3/4 access **all-level** internships.
 * **Placement Acceptance:** Can accept only **one** "Successful" placement, automatically withdrawing all others.
 * **Withdrawal Request:** Requests are submitted to Career Center Staff for approval.
 
 ### 3. Company Representative Features
 
-* **Registration & Approval:** CRs register and await authorization by the Career Center Staff,
+* **Registration & Approval:** CRs register and await authorization by the Career Center Staff.
 * **Opportunity Creation:** Can create up to **5** internship opportunities, which start with a "Pending" status requiring Staff approval.
 * **Application Review:** Can view student details and **Approve/Reject** applications.
 * **Visibility Toggle:** Can turn an internship's visibility "on" or "off" for students.
@@ -67,15 +67,18 @@ This system utilizes the **Boundary-Control-Entity (BCE)** design pattern.
 * **Withdrawal Handling:** Approve or reject student withdrawal requests (which may affect placement status) 
 * **Reporting:** Generate comprehensive reports with filters (Status, Major, Level, etc.)
 
+### 5. Miscallaneous:
+* **Persistant User Filter Setting:** User Filter Setting persist **(SOLID)**.
 ---
 
 ## Object-Oriented Design (OOD) Applications
 
 ### Class Structure
 The system is cleanly separated into three layers:
-* **Entity (Models):** `Student`, `Internship`, `Application`, etc.
-* **Control (Controllers):** `StudentController`, `ApplicationController`, `CSSController` (Business Logic).
-* **Boundary (UI):** `LoginUI`, `StudentUI`, `CompanyRepUI` (Input/Output).
+* **Entity/Models (MODEL):** `Student`, `Internship`, `Application`, etc.
+* **Control (CONTROLLER):** `StudentController`, `ApplicationController`, `CSSController` (Business Logic).
+* **UI (VIEW):** `LoginUI`, `StudentUI`, `CompanyRepUI` (Input/Output).
+There is a utiltity folder to hold the Filter classes and FileService.
 
 ### OO Principles Applied
 * **Inheritance & Polymorphism:** Achieved via the **`User`** abstract class, allowing various roles (`Student`, `CR`, `Staff`) to share core functionality like `login` and `changePassword`, while implementing role-specific actions polymorphically.
@@ -89,7 +92,8 @@ The system is cleanly separated into three layers:
 This submission includes the following files/folders:
 
 * **`README.md`** (This file)
-* **Report.pdf** (UML Diagrams, Design Considerations, Reflection)
+* **Report.pdf** (Detailed design report including the shift from BCE to MVC, SOLID principles, UML Class Diagram, Sequence Diagrams, and Testing Analysis)
+* **`bin/` folder:** Contains all compiled source code (`.class files`)
 * **`src/` folder:** Contains all implementation source code (`.java` files)
 * **`doc/` folder:** Contains the Java API HTML documentation generated using **Javadoc**
 * **`data/` folder:** Contains the CSV files used for initialization (`sample_student_list.csv`, `internship_list.csv`, etc.) 
