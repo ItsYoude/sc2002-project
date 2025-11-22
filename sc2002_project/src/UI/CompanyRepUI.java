@@ -99,7 +99,7 @@ public class CompanyRepUI {
             do {
                 System.out.print("Enter prefered major: ");
                 major = sc.nextLine().trim();
-            } while (title.isEmpty());
+            } while (major.isEmpty());
 
             while (true) {
                 System.out.print("Enter target year type (Basic/Intermediate/Advanced): ");
